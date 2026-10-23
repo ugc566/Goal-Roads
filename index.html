@@ -17,22 +17,29 @@ body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-app
 .cr{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 button{font:inherit;font-size:14px;background:var(--s2);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;cursor:pointer}
 button.p{background:var(--ac);color:var(--bg);border-color:var(--ac)}
-input,textarea{font:inherit;color:var(--tx);background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:8px;width:100%;box-sizing:border-box}
+input,textarea,select{font:inherit;color:var(--tx);background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:8px;width:100%;box-sizing:border-box}
 textarea{min-height:70px;resize:vertical;margin-top:6px}
 label{display:block}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .r{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
 .m{color:var(--mu);font-size:13px}
 .ts{border:1px solid var(--gd);color:var(--gd);border-radius:8px;padding:8px;margin-bottom:8px;font-weight:600}
+.ck{width:30px;height:30px;padding:0;border-radius:8px;flex:none;font-size:18px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.sm{padding:3px 9px;font-size:13px}
+.ck.sm{width:24px;height:24px;font-size:14px;border-radius:6px;padding:0}
+.ck.on{background:var(--ac);color:var(--bg);border-color:var(--ac)}
 .mp{height:66vh;overflow:auto;border:1px solid var(--bd);border-radius:8px;margin-top:8px;touch-action:pan-x pan-y;background:var(--s1)}
 svg{display:block}
 #sv{margin-top:0}
 svg text{fill:var(--tx);font-family:inherit}
 svg text.mu{fill:var(--mu)}
 </style></head><body>
-<div class="w" id="app"></div><div id="md"></div>
+<div class="w" id="app"></div><div id="md"></div><input type="file" accept="image/*" id="fi" style="display:none" onchange="pf(this)">
 <script>
 var K="goalroads.v1",C=["#7F77DD","#1D9E75","#D85A30","#378ADD","#BA7517","#D4537E","#639922","#E24B4A"];
+var todo=0,td="",tdT="",tdW="1",tdO=0,tdS="",tdP="none";
+var vm="tree",cf=0,IM={},DB=null,IT=0;
 var S,path=[],sel=-1,mode=0,lk=-1,arm=0,toast="",dS="",dT="",tree=0,z=0,WW=380,HH=500,TN=[],raf=0,pnz=0,MD=null;
 var NS="http://www.w3.org/2000/svg";
 function $(i){return document.getElementById(i)}
@@ -44,29 +51,31 @@ function nc(l){var u=l.map(function(x){return x.c});for(var i=0;i<C.length;i++)i
 function pr(n){if(n.kids.length){var s=0;n.kids.forEach(function(k){s+=pr(k)});return s/n.kids.length}return n.p/n.N}
 function tot(n){if(n.kids.length){var s=0;n.kids.forEach(function(k){s+=tot(k)});return s}return n.N}
 function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(x){}}
-function ld(){try{var t=localStorage.getItem(K);if(t){S=JSON.parse(t);return}}catch(x){}
-S={u:1,links:[],goals:[]};
+function ld(){try{var t=localStorage.getItem(K);if(t){S=JSON.parse(t);if(!S.todos)S.todos=[];if(!S.recur)S.recur=[];S.todos.forEach(function(x){if(!x.subs)x.subs=[]});return}}catch(x){}
+S={u:1,links:[],goals:[],todos:[],recur:[]};
 var a=mk("Pakistan affairs",20,6.5,0,C[0]),b=mk("Current affairs",30,9.5,0,C[1]),c=mk("Islamiat",20,7,0,C[2]);
 var gk=mk("GK",30,0,[a,b,c],C[5]),es=mk("Essay marks",12,3.5,0,C[0]),wr=mk("Writing",30,6.3,0,C[1]);
 var m1=mk("PMS Punjab exam",30,0,[gk,es,wr],C[3]);
 var w=mk("Walk daily",30,12,0,C[0]),ns=mk("No sugar",30,9,0,C[1]);
-S.goals=[m1,mk("Fitness",30,0,[w,ns],C[1])]}
+S.goals=[m1,mk("Fitness",30,0,[w,ns],C[1])];var d0=ymd(new Date());S.recur.push({id:S.u++,t:"Read one editorial paragraph",r:es.id,w:.5,subs:[],rep:"daily",d:d0,skip:[]});[["Read Pakistan affairs chapter 3",a,1,["Read sections 1 and 2","Make short notes","Test 5 MCQs"]],["Write one practice essay",es,1],["Revise Islamiat notes",c,.5],["Buy a new notebook",{id:0},1]].forEach(function(x){S.todos.push({id:S.u++,d:d0,t:x[0],r:x[1].id,w:x[2],done:0,ap:0,subs:(x[3]||[]).map(function(q){return{t:q,done:0}})})})}
+function ymd(d){var p=function(n){return(n<10?"0":"")+n};return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())}
+function TC(){var d0=ymd(new Date());mat(d0);var a=S.todos.filter(function(x){return x.d==d0}),b=a.filter(function(x){return x.done}).length;return'<div class="c"><div class="r"><div><b>Today’s to-do</b><div class="m">'+(a.length?b+" of "+a.length+" done":"No tasks yet")+'</div></div><button class="p" onclick="tdo()">Open to-do</button></div></div>'}
 function hub(){return path.length?path[path.length-1]:null}
 function cr(){var h='<button onclick="go(-1)">Home</button>';path.forEach(function(n,i){h+='<span class="m">›</span>'+(i==path.length-1?'<b>'+e(tr(n.n,16))+'</b>':'<button onclick="go('+i+')">'+e(tr(n.n,16))+'</button>')});
-h+='<button style="margin-left:auto" onclick="tv()">'+(tree?"Back":"Whole picture")+'</button>';return'<div class="cr">'+h+'</div>'}
-function go(i){path=path.slice(0,i+1);sel=-1;arm=0;toast="";tree=0;z=0;R()}
-function tv(){tree=tree?0:1;z=0;sel=-1;R()}
-function R(k){if(!k&&$("nt")){dT=$("nt").value;dS=$("ns").value}
-var m=$("mp"),rs=!z,sx=m?m.scrollLeft:0,sy=m?m.scrollTop:0;
-$("app").innerHTML=cr()+(tree?TV():path.length?HV():HM());
-m=$("mp");if(m){draw();bind(m);if(!rs){m.scrollLeft=sx;m.scrollTop=sy}}}
-function HM(){var n=S.goals.length,H=Math.max(160,Math.ceil(n/2)*150+20),p={},s='<div class="c"><div class="r"><b>My main goals</b><button onclick="mode=!mode;lk=-1;R()">'+(mode?"Done linking":"Link goals")+'</button></div>';
+h+='<button style="margin-left:auto" onclick="tdv()">'+(todo?"Back":"To-do")+'</button><button onclick="tv()">'+(tree?"Back":"Whole picture")+'</button>';return'<div class="cr">'+h+'</div>'}
+function go(i){path=path.slice(0,i+1);sel=-1;arm=0;toast="";tree=0;todo=0;z=0;R()}
+function tv(){tree=tree?0:1;todo=0;z=0;sel=-1;R()}
+function R(k){if(!k){if($("nt")){dT=$("nt").value;dS=$("ns").value}if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value}if(tdO&&$("sb"+tdO))tdS=$("sb"+tdO).value}
+var wt=!!$("tt"),py=window.scrollY,m=$("mp"),rs=!z,sx=m?m.scrollLeft:0,sy=m?m.scrollTop:0;
+$("app").innerHTML=cr()+(todo?TD():tree?TV():path.length?HV():HM());
+m=$("mp");if(m){draw();bind(m);if(!rs){m.scrollLeft=sx;m.scrollTop=sy}}if(wt&&todo)window.scrollTo(0,py)}
+function HM(){var n=S.goals.length,H=Math.max(160,Math.ceil(n/2)*150+20),p={},s=TC()+'<div class="c"><div class="r"><b>My main goals</b><button onclick="mode=!mode;lk=-1;R()">'+(mode?"Done linking":"Link goals")+'</button></div>';
 if(mode)s+='<div class="m">Tap two goals to link or unlink them.</div>';
 s+='<svg viewBox="0 0 380 '+H+'" style="width:100%">';
 S.goals.forEach(function(g,i){p[g.id]=[95+(i%2)*190,75+Math.floor(i/2)*150]});
 S.links.forEach(function(l){var a=p[l[0]],b=p[l[1]];if(a&&b)s+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="var(--ac)" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>'});
 S.goals.forEach(function(g,i){var x=p[g.id][0],y=p[g.id][1],f=pr(g);
-s+='<g style="cursor:pointer" onclick="tg('+i+')">'+(lk==i?'<circle cx="'+x+'" cy="'+y+'" r="58" fill="none" stroke="var(--ac)" stroke-width="2"/>':'')+'<circle cx="'+x+'" cy="'+y+'" r="46" fill="var(--s1)" stroke="var(--s2)" stroke-width="9"/><circle cx="'+x+'" cy="'+y+'" r="46" fill="none" stroke="'+g.c+'" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+(f*2*Math.PI*46)+' 999" transform="rotate(-90 '+x+' '+y+')"/><text x="'+x+'" y="'+(y+6)+'" text-anchor="middle" font-size="17" font-weight="600">'+Math.round(f*100)+'%</text><text x="'+x+'" y="'+(y+74)+'" text-anchor="middle" font-size="13" font-weight="600">'+e(tr(g.n,18))+'</text></g>'});
+s+='<g style="cursor:pointer" onclick="tg('+i+')">'+(lk==i?'<circle cx="'+x+'" cy="'+y+'" r="58" fill="none" stroke="var(--ac)" stroke-width="2"/>':'')+'<circle cx="'+x+'" cy="'+y+'" r="46" fill="var(--s1)" stroke="var(--s2)" stroke-width="9"/><circle cx="'+x+'" cy="'+y+'" r="46" fill="none" stroke="'+g.c+'" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+(f*2*Math.PI*46)+' 999" transform="rotate(-90 '+x+' '+y+')"/>'+(IM[g.id]?'<clipPath id="hc'+i+'"><circle cx="'+x+'" cy="'+y+'" r="37"/></clipPath><image href="'+IM[g.id].t+'" x="'+(x-37)+'" y="'+(y-37)+'" width="74" height="74" preserveAspectRatio="xMidYMid slice" clip-path="url(#hc'+i+')" opacity=".6"/>':'')+'<text x="'+x+'" y="'+(y+6)+'" text-anchor="middle" font-size="17" font-weight="600"'+(IM[g.id]?' style="paint-order:stroke;stroke:var(--s1);stroke-width:4px"':'')+'>'+Math.round(f*100)+'%</text><text x="'+x+'" y="'+(y+74)+'" text-anchor="middle" font-size="13" font-weight="600">'+e(tr(g.n,18))+'</text></g>'});
 if(!n)s+='<text x="190" y="80" text-anchor="middle" font-size="14" class="mu">No goals yet. Add your first one below.</text>';
 s+='</svg></div><div class="c"><b>Add a main goal</b><div class="g2"><input id="nm" placeholder="Clear the exam"/><button class="p" onclick="am()">Add goal</button></div><div class="m" style="margin-top:8px">Works offline. Progress saves on this phone.</div></div>';
 return s}
@@ -74,11 +83,53 @@ function tg(i){if(mode){if(lk<0)lk=i;else{if(lk!=i)tl(S.goals[lk].id,S.goals[i].
 function tl(a,b){var j=-1;S.links.forEach(function(l,i){if((l[0]==a&&l[1]==b)||(l[0]==b&&l[1]==a))j=i});if(j>=0)S.links.splice(j,1);else S.links.push([a,b]);sv()}
 function am(){var n=$("nm").value.trim();if(!n)return;S.goals.push(mk(n,30,0,0,nc(S.goals)));sv();R()}
 function ZB(){return'<div class="cr" style="margin-top:8px"><button onclick="zm(.8)">−</button><button onclick="zm(1.25)">+</button><button onclick="zf()">Fit all</button><span class="m" id="zl"></span></div>'}
-function HV(){return'<div class="c"><input value="'+e(hub().n)+'" onchange="rn(this.value)" aria-label="Goal name"/>'+ZB()+'<div id="mp" class="mp"><svg id="sv"></svg></div></div>'+PN()+AF()}
-function TV(){return'<div class="c"><b>Whole picture</b><div class="m">Every goal, sub-goal and road. Tap one to open it.</div>'+ZB()+'<div id="mp" class="mp"><svg id="sv"></svg></div></div>'}
+function HV(){return'<div class="c"><input value="'+e(hub().n)+'" onchange="rn(this.value)" aria-label="Goal name"/>'+imgRow(hub().id)+ZB()+'<div id="mp" class="mp"><svg id="sv"></svg></div></div>'+PN()+AF()}
+function TV(){var b=[["tree","Tree"],["cards","Cards"],["list","List"],["rings","Rings"]].map(function(x){return'<button class="sm'+(vm==x[0]?" p":"")+'" onclick="svw(\''+x[0]+'\')">'+x[1]+'</button>'}).join("");
+var h='<div class="c"><b>Whole picture</b><div class="m">Choose how you want to see everything.</div><div class="cr" style="margin-top:8px">'+b+'</div>';
+if(vm=="cards")return h+CF()+CV()+'</div>';if(vm=="list")return h+LV()+'</div>';
+return h+ZB()+'<div id="mp" class="mp"><svg id="sv"></svg></div></div>'}
+function svw(v){vm=v;z=0;R()}
+function cfs(i){cf=i;R()}
+function allN(){var o=[];function w(n,a){o.push({n:n,a:a});n.kids.forEach(function(c){w(c,a.concat([n]))})}S.goals.forEach(function(g){w(g,[])});return o}
+function CF(){return'<div class="cr" style="margin-top:8px">'+[["All",0],["Goals",1],["Roads",2]].map(function(x){return'<button class="sm'+(cf==x[1]?" p":"")+'" onclick="cfs('+x[1]+')">'+x[0]+'</button>'}).join("")+'<span class="m">Tap a picture to enlarge it</span></div>'}
+function CV(){var L=allN().filter(function(x){return cf==0||(cf==1?(!x.a.length||x.n.kids.length):(x.a.length&&!x.n.kids.length))});
+if(!L.length)return'<div class="m" style="margin-top:10px">Nothing here yet.</div>';
+var s='<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px">';
+L.forEach(function(x){var n=x.n,m=IM[n.id],f=Math.round(pr(n)*100),pt=x.a.length?x.a.map(function(y){return y.n}).join(" › "):"Main goal";
+s+='<div style="border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--s1)"><div onclick="'+(m?"vi("+n.id+")":"pi("+n.id+")")+'" style="height:92px;cursor:pointer;background:'+n.c+'33;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:13px">'+(m?'<img src="'+m.m+'" style="width:100%;height:100%;object-fit:cover" alt=""/>':"+ Add picture")+'</div><div style="padding:8px"><b style="font-size:14px">'+e(tr(n.n,22))+'</b><div class="m">'+e(tr(pt,30))+'</div><div style="height:6px;background:var(--s2);border-radius:3px;margin:6px 0"><div style="height:6px;width:'+f+'%;background:'+n.c+';border-radius:3px"></div></div><div class="r"><b>'+f+'%</b><span class="m">'+tot(n)+' steps</span></div><div class="g2" style="margin-top:4px"><button class="sm" onclick="nv('+n.id+')">Open</button><button class="sm" onclick="pi('+n.id+')">'+(m?"Change":"Picture")+'</button></div></div></div>'});
+return s+'</div>'}
+function LV(){var s='<div style="margin-top:10px">';
+function w(n,d){var m=IM[n.id],f=Math.round(pr(n)*100);s+='<div class="r" style="gap:8px;padding:7px 0 7px '+(d*14)+'px;border-top:1px solid var(--bd);cursor:pointer" onclick="nv('+n.id+')">'+(m?'<img src="'+m.t+'" style="width:30px;height:30px;border-radius:6px;object-fit:cover;flex:none" alt=""/>':'<span style="width:30px;height:30px;border-radius:6px;background:'+n.c+'33;flex:none"></span>')+'<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+e(n.n)+'</div><div style="height:6px;background:var(--s2);border-radius:3px;margin-top:4px"><div style="height:6px;width:'+f+'%;background:'+n.c+';border-radius:3px"></div></div></div><b style="font-size:13px">'+f+'%</b><button class="sm" onclick="event.stopPropagation();pi('+n.id+')" aria-label="Picture">🖼</button></div>';n.kids.forEach(function(c){w(c,d+1)})}
+S.goals.forEach(function(g){w(g,0)});if(!S.goals.length)s+='<div class="m">Nothing here yet.</div>';return s+'</div>'}
+function drawRings(){TN=[];var md=0,vr={n:"All goals",c:"#888",kids:S.goals,N:0,p:0,notes:{},id:0};
+function lay(n,anc,d){var rc={n:n,anc:anc,d:d,i:TN.length,k:[]};md=Math.max(md,d);TN.push(rc);
+if(n.kids.length){n.kids.forEach(function(c){rc.k.push(lay(c,d?anc.concat([n]):anc,d+1))});rc.w=rc.k.reduce(function(s,c){return s+c.w},0)}else rc.w=1;return rc}
+var rt=lay(vr,[],0),R0=58,TH=64,Rm=R0+md*(TH+4)+10,W=Rm*2+10,cx=W/2,cy=W/2,s='';
+function arcp(r1,r2,a0,a1){var p=function(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)]},l=a1-a0>Math.PI?1:0;return"M"+p(r2,a0)+" A"+r2+","+r2+" 0 "+l+" 1 "+p(r2,a1)+" L"+p(r1,a1)+" A"+r1+","+r1+" 0 "+l+" 0 "+p(r1,a0)+" Z"}
+function place(rc,a0,a1){rc.a0=a0;rc.a1=a1;var a=a0;rc.k.forEach(function(c){var sp=(a1-a0)*c.w/rc.w;place(c,a,a+sp);a+=sp})}
+place(rt,0,Math.PI*2-.0001);
+TN.forEach(function(rc){if(!rc.d)return;var r1=R0+(rc.d-1)*(TH+4)+4,r2=r1+TH,f=pr(rc.n),c=rc.n.c,a0=rc.a0,a1=rc.a1-.004,mid=(rc.a0+rc.a1)/2,rm=(r1+r2)/2;if(a1<=a0)a1=a0+.001;
+s+='<g style="cursor:pointer" onclick="tn('+rc.i+')"><path d="'+arcp(r1,r2,a0,a1)+'" fill="'+c+'" fill-opacity=".22" stroke="var(--s1)" stroke-width="1.5"/>';
+if(f>.003)s+='<path d="'+arcp(r1,r2,a0,a0+(a1-a0)*Math.min(1,f))+'" fill="'+c+'" stroke="var(--s1)" stroke-width="1.5"/>';
+if((a1-a0)*rm>=14){var dg=mid*180/Math.PI,rot=((dg-90)%360+360)%360;if(rot>90&&rot<270)rot+=180;
+s+='<text transform="translate('+(cx+rm*Math.sin(mid))+','+(cy-rm*Math.cos(mid))+') rotate('+rot+')" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="600" style="pointer-events:none">'+e(tr(rc.n.n,10))+'</text>'}
+s+='</g>'});
+s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(R0-2)+'" fill="var(--ab)" stroke="var(--ac)"/><text x="'+cx+'" y="'+(cy-4)+'" text-anchor="middle" font-size="13" font-weight="600">All goals</text><text x="'+cx+'" y="'+(cy+14)+'" text-anchor="middle" font-size="13" class="mu">'+Math.round(pr(vr)*100)+'%</text>';
+fin(s,W,W)}
+function nv(id){var f=fid(id);if(!f)return;tree=0;todo=0;z=0;arm=0;toast="";if(!f.n.kids.length&&f.a.length){path=f.a.slice();sel=path[path.length-1].kids.indexOf(f.n)}else{path=f.a.concat([f.n]);sel=-1}R()}
+function idb(cb){try{var q=indexedDB.open("goalroads-img",1);q.onupgradeneeded=function(){q.result.createObjectStore("i")};q.onsuccess=function(){DB=q.result;var c=DB.transaction("i").objectStore("i").openCursor();c.onsuccess=function(){var r=c.result;if(r){IM[r.key]=r.value;r.continue()}else cb()};c.onerror=function(){cb()}};q.onerror=function(){cb()}}catch(x){cb()}}
+function ip(id,v){IM[id]=v;if(DB)try{DB.transaction("i","readwrite").objectStore("i").put(v,id)}catch(x){}}
+function idl(id){delete IM[id];if(DB)try{DB.transaction("i","readwrite").objectStore("i").delete(id)}catch(x){}}
+function di(n){idl(n.id);n.kids.forEach(di)}
+function pi(id){IT=id;$("fi").value="";$("fi").click()}
+function pf(inp){var f=inp.files&&inp.files[0];if(!f||!IT)return;var id=IT,fr=new FileReader();
+fr.onload=function(){var im=new Image();im.onload=function(){function rs(mx,q){var k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));c.getContext("2d").drawImage(im,0,0,c.width,c.height);return c.toDataURL("image/jpeg",q)}ip(id,{m:rs(720,.78),t:rs(110,.7)});R()};im.onerror=function(){toast="That file could not be read as a picture";R()};im.src=fr.result};fr.readAsDataURL(f)}
+function ri(id){idl(id);R()}
+function vi(id){var m=IM[id];if(!m)return;$("md").innerHTML='<div style="position:fixed;left:0;right:0;top:0;bottom:0;background:rgba(0,0,0,.82);z-index:9;display:flex;align-items:center;justify-content:center;padding:16px" onclick="cm()"><img src="'+m.m+'" style="max-width:100%;max-height:100%;border-radius:12px" alt="Goal picture"/></div>'}
+function imgRow(id){var m=IM[id];return'<div class="r" style="gap:8px;margin-top:8px">'+(m?'<img src="'+m.t+'" onclick="vi('+id+')" style="width:44px;height:44px;border-radius:8px;object-fit:cover;cursor:pointer" alt="Picture"/>':'')+'<span class="m" style="flex:1">Picture</span><button class="sm" onclick="pi('+id+')">'+(m?"Change":"+ Add")+'</button>'+(m?'<button class="sm" onclick="ri('+id+')">Remove</button>':'')+'</div>'}
 function fin(s,W,H){var m=$("mp"),v=$("sv");WW=W;HH=H;if(!z)z=Math.max(.45,Math.min(1.4,(m.clientWidth||360)/W));
 v.setAttribute("viewBox","0 0 "+W+" "+H);v.style.width=W*z+"px";v.style.height=H*z+"px";v.innerHTML=s;$("zl").textContent=Math.round(z*100)+"%"}
-function draw(){if(tree)drawTree();else drawMap()}
+function draw(){if(tree){if(vm=="rings")drawRings();else drawTree()}else drawMap()}
 function setZ(nz){pnz=Math.max(.2,Math.min(14,nz));if(raf)return;raf=requestAnimationFrame(function(){raf=0;var m=$("mp"),o=z,cx=(m.scrollLeft+m.clientWidth/2)/o,cy=(m.scrollTop+m.clientHeight/2)/o;z=pnz;draw();m.scrollLeft=cx*z-m.clientWidth/2;m.scrollTop=cy*z-m.clientHeight/2})}
 function zm(f){setZ(z*f)}
 function zf(){var m=$("mp");z=Math.max(.2,Math.min(m.clientWidth/WW,m.clientHeight/HH));draw();m.scrollLeft=0;m.scrollTop=0}
@@ -94,7 +145,7 @@ d="M"+xs+","+ys+" C"+(xs+w)+","+(ys-L*.4)+" "+(xe-w)+","+(gy+L*.4)+" "+xe+","+gy
 s+='<g id="g'+i+'" opacity="'+op+'" style="cursor:pointer" onclick="pick('+i+')"><path id="b'+i+'" d="'+d+'" fill="none" stroke="'+r.c+'" stroke-opacity=".3" stroke-width="9" stroke-linecap="round"/><path d="'+d+'" fill="none" stroke="#000" stroke-opacity="0" stroke-width="30" pointer-events="stroke"/>'
 +(P?'<circle cx="'+xs+'" cy="'+ys+'" r="12" fill="var(--s1)" stroke="'+r.c+'" stroke-width="3"/><text x="'+xs+'" y="'+(ys+4)+'" text-anchor="middle" font-size="12" font-weight="600">'+r.kids.length+'</text>':'<circle cx="'+xs+'" cy="'+ys+'" r="6" fill="'+r.c+'"/>')
 +'<text transform="translate('+(xs+4)+','+(ys+118)+') rotate(-90)" font-size="13" font-weight="600">'+e(tr(r.n,11)+" · "+T[i])+'</text></g>'});
-s+='<rect x="'+(cx-cw/2)+'" y="56" width="'+cw+'" height="60" rx="30" '+(sub?'fill="'+h.c+'" fill-opacity=".18" stroke="'+h.c+'" stroke-width="3"':'fill="var(--ab)" stroke="var(--ac)"')+'/><text x="'+cx+'" y="82" text-anchor="middle" font-size="15" font-weight="600">'+e(tr(h.n,26))+'</text><text x="'+cx+'" y="102" text-anchor="middle" font-size="13" class="mu">'+Math.round(pr(h)*100)+'% there · '+tot(h)+' steps</text>';
+s+='<rect x="'+(cx-cw/2)+'" y="56" width="'+cw+'" height="60" rx="30" '+(sub?'fill="'+h.c+'" fill-opacity=".18" stroke="'+h.c+'" stroke-width="3"':'fill="var(--ab)" stroke="var(--ac)"')+'/><text x="'+(cx+(IM[h.id]?26:0))+'" y="82" text-anchor="middle" font-size="15" font-weight="600">'+e(tr(h.n,IM[h.id]?16:26))+'</text><text x="'+(cx+(IM[h.id]?26:0))+'" y="102" text-anchor="middle" font-size="13" class="mu">'+Math.round(pr(h)*100)+'% there · '+tot(h)+' steps</text>'+(IM[h.id]?'<clipPath id="hcl"><circle cx="'+(cx-cw/2+32)+'" cy="86" r="22"/></clipPath><image href="'+IM[h.id].t+'" x="'+(cx-cw/2+10)+'" y="64" width="44" height="44" preserveAspectRatio="xMidYMid slice" clip-path="url(#hcl)"/>':'');
 if(!n)s+='<text x="'+cx+'" y="260" text-anchor="middle" font-size="14" class="mu">No roads yet. Add one below.</text>';
 if(sub)s+='<line x1="'+cx+'" y1="54" x2="'+cx+'" y2="28" stroke="'+h.c+'" stroke-width="4"/><polygon points="'+(cx-7)+',34 '+cx+',24 '+(cx+7)+',34" fill="'+h.c+'"/><text x="'+cx+'" y="14" text-anchor="middle" font-size="12" class="mu">Leads to: '+e(tr(path[path.length-2].n,20))+'</text>';
 else s+='<text x="'+cx+'" y="18" text-anchor="middle" font-size="12" class="mu">Main goal</text>';
@@ -118,14 +169,14 @@ if(n.kids.length){n.kids.forEach(function(c){rc.k.push(lay(c,d?anc.concat([n]):a
 var rt=lay(vr,[],0),s='',X=function(d){return 10+d*(PW+36)};
 TN.forEach(function(rc){rc.k.forEach(function(c){var x1=X(rc.d)+PW,x2=X(c.d);s+='<path d="M'+x1+','+rc.y+' C'+(x1+18)+','+rc.y+' '+(x2-18)+','+c.y+' '+x2+','+c.y+'" fill="none" stroke="var(--bd)" stroke-width="2"/>'})});
 TN.forEach(function(rc){var x=X(rc.d),f=pr(rc.n),c=rc.d?rc.n.c:"var(--ac)";
-s+='<g style="cursor:pointer" onclick="tn('+rc.i+')"><rect x="'+x+'" y="'+(rc.y-14)+'" width="'+PW+'" height="28" rx="8" fill="var(--s1)" stroke="'+c+'" stroke-width="1.5"/><rect x="'+(x+1)+'" y="'+(rc.y-13)+'" width="'+(f*(PW-2))+'" height="26" rx="7" fill="'+c+'" fill-opacity=".25"/><text x="'+(x+8)+'" y="'+(rc.y+4)+'" font-size="12" font-weight="600">'+e(tr(rc.n.n,12))+'</text><text x="'+(x+PW-6)+'" y="'+(rc.y+4)+'" text-anchor="end" font-size="11" class="mu">'+Math.round(f*100)+'%</text></g>'});
+s+='<g style="cursor:pointer" onclick="tn('+rc.i+')"><rect x="'+x+'" y="'+(rc.y-14)+'" width="'+PW+'" height="28" rx="8" fill="var(--s1)" stroke="'+c+'" stroke-width="1.5"/><rect x="'+(x+1)+'" y="'+(rc.y-13)+'" width="'+(f*(PW-2))+'" height="26" rx="7" fill="'+c+'" fill-opacity=".25"/>'+(IM[rc.n.id]?'<clipPath id="tc'+rc.i+'"><circle cx="'+(x+16)+'" cy="'+rc.y+'" r="10"/></clipPath><image href="'+IM[rc.n.id].t+'" x="'+(x+6)+'" y="'+(rc.y-10)+'" width="20" height="20" preserveAspectRatio="xMidYMid slice" clip-path="url(#tc'+rc.i+')"/>':'')+'<text x="'+(x+(IM[rc.n.id]?30:8))+'" y="'+(rc.y+4)+'" font-size="12" font-weight="600">'+e(tr(rc.n.n,IM[rc.n.id]?8:12))+'</text><text x="'+(x+PW-6)+'" y="'+(rc.y+4)+'" text-anchor="end" font-size="11" class="mu">'+Math.round(f*100)+'%</text></g>'});
 fin(s,(md+1)*(PW+36)+10,Math.max(120,cnt*36+30))}
 function tn(i){var rc=TN[i];tree=0;z=0;arm=0;toast="";
 if(rc.d==0){path=[];sel=-1}else if(!rc.n.kids.length&&rc.anc.length){path=rc.anc.slice();sel=path[path.length-1].kids.indexOf(rc.n)}else{path=rc.anc.concat([rc.n]);sel=-1}R()}
 function PN(){var h=hub(),r=h.kids[sel],s='<div class="c" id="pn">';
 if(toast)s+='<div class="ts">★ '+e(toast)+'</div>';
 if(!r)return s+'<div class="m">Tap a road to open its details. Road length shows its steps. Each footprint is a quarter step (zoom in to see them). A flag marks a note: tap it to read. A ring with a number means sub-roads.</div></div>';
-s+='<input value="'+e(r.n)+'" onchange="rr(this.value)" aria-label="Road name"/>';
+s+='<input value="'+e(r.n)+'" onchange="rr(this.value)" aria-label="Road name"/>'+imgRow(r.id);
 if(r.kids.length){
 s+='<div class="r"><span class="m">Sub-roads</span><b>'+r.kids.length+'</b></div><div class="r"><span class="m">Total steps</span><b>'+tot(r)+'</b></div><div class="r"><span class="m">Overall</span><b>'+Math.round(pr(r)*100)+'%</b></div>';
 r.kids.slice(0,10).forEach(function(c){s+='<div class="r m"><span>'+e(tr(c.n,24))+'</span><span>'+Math.round(pr(c)*100)+'%</span></div>'});
@@ -141,6 +192,54 @@ return s+'<button style="width:100%;margin-top:8px" onclick="rm()">'+(arm==1?"Ta
 function AF(){var s='<div class="c"><b>Add a road to '+e(tr(hub().n,22))+'</b><div class="g2"><input id="rn2" placeholder="Islamiat"/><input id="rs" type="number" min="1" step="1" value="30" aria-label="Steps"/></div><div class="m" style="margin:4px 0 8px">Name, then road length in steps (30, 365 or any number). A longer road is drawn longer.</div><button class="p" style="width:100%" onclick="ar()">Add road</button></div>';
 if(path.length==1)s+='<button style="width:100%;margin-top:10px" onclick="dm()">'+(arm==2?"Tap again to delete":"Delete this goal")+'</button>';
 return s}
+function leaves(){var o=[];function w(n,a){if(n.kids.length)n.kids.forEach(function(c){w(c,a.concat([n]))});else if(a.length)o.push({n:n,a:a})}S.goals.forEach(function(g){w(g,[])});return o}
+function fid(id){var r=null;function w(n,a){if(r)return;if(n.id==id){r={n:n,a:a};return}n.kids.forEach(function(c){w(c,a.concat([n]))})}S.goals.forEach(function(g){w(g,[])});return r}
+function lb(f){return f.a.concat([f.n]).slice(-2).map(function(x){return x.n}).join(" › ")}
+function cp(){if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value}}
+function gt(id){return S.todos.filter(function(x){return x.id==id})[0]}
+function sy(t){var n=t.subs.length,dn=t.subs.filter(function(q){return q.done}).length,lk=n&&t.lk;if(lk)t.done=dn==n?1:0;
+var want=lk?Math.round(t.w*dn/n*100)/100:(t.done?t.w:0),f=t.r?fid(t.r):null;toast="";if(!f)return;
+if(f.n.kids.length){toast="This road was split into sub-roads. Pick a sub-road for this task.";return}
+var r=f.n,o=r.p/r.N,d=Math.round((want-t.ap)*100)/100,np=Math.min(r.N,Math.max(0,Math.round((r.p+d)*100)/100)),a=Math.round((np-r.p)*100)/100;
+r.p=np;t.ap=Math.round((t.ap+a)*100)/100;
+if(a>0){cel(o,r.p/r.N);var m=toast;toast=tr(r.n,18)+" +"+a+" step"+(a==1?"":"s")+(m?" · "+m:"")}}
+function TD(){mat(td);var L=leaves(),all=S.todos.filter(function(x){return x.d==td}),ts=all.filter(function(x){return!x.done}).concat(all.filter(function(x){return x.done})),dn=0,gn=0,s,RL={daily:"Every day",weekdays:"Mon–Fri",weekly:"Every week"};
+all.forEach(function(x){if(x.done)dn++;gn+=x.ap||0});
+var dt=new Date(td+"T00:00:00"),lab=dt.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})+(td==ymd(new Date())?" · Today":"");
+var o='<option value="0">No road (plain task)</option>',cur=null;L.forEach(function(x){var g0=x.a[0];if(g0!==cur){if(cur)o+='</optgroup>';o+='<optgroup label="'+e(g0.n)+'">';cur=g0}o+='<option value="'+x.n.id+'"'+(x.n.id==S.last?" selected":"")+'>'+e(x.a.slice(1).concat([x.n]).map(function(y){return y.n}).join(" › "))+'</option>'});if(cur)o+='</optgroup>';
+var rpo=[["none","Does not repeat"],["daily","Every day"],["weekdays","Weekdays (Mon–Fri)"],["weekly","Every week"]].map(function(v){return'<option value="'+v[0]+'"'+(tdP==v[0]?" selected":"")+'>'+v[1]+'</option>'}).join("");
+s='<div class="c"><div class="r"><button onclick="sh(-1)">‹</button><div style="text-align:center"><b>'+lab+'</b><div class="m">'+dn+' of '+all.length+' done · +'+Math.round(gn*100)/100+' steps</div></div><button onclick="sh(1)">›</button></div><input type="date" value="'+td+'" onchange="setD(this.value)" style="margin-top:8px" aria-label="Date"/>';
+if(toast)s+='<div class="ts" style="margin-top:8px">★ '+e(toast)+'</div>';
+s+='<div style="margin-top:10px"><input id="tt" placeholder="Write a task, for example: Read chapter 3" value="'+e(tdT)+'"/><div class="g2"><label class="m">Road (subject)<select id="trd" onchange="S.last=+this.value">'+o+'</select></label><label class="m">Counts as (steps)<input id="tw" type="number" min="0.25" step="0.25" value="'+e(tdW)+'"/></label></div><label class="m" style="margin-top:8px">Repeat<select id="trp">'+rpo+'</select></label><button class="p" style="width:100%;margin-top:8px" onclick="at()">Add task</button></div>';
+s+='<div class="m" style="margin-top:6px">Tick a task and its road moves forward. Sub-tasks are only a checklist unless you switch “Sub-tasks move the road” on.</div>';
+if(!ts.length)s+='<div class="m" style="margin-top:14px">No tasks for this day yet.</div>';
+ts.forEach(function(x){var f=x.r?fid(x.r):null,sb=x.subs,sc=sb.filter(function(q){return q.done}).length,tp=tpl(x);
+s+='<div style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px"><div class="r" style="gap:10px;align-items:flex-start"><button class="ck'+(x.done?" on":"")+'" onclick="tk('+x.id+')" aria-label="Mark done">'+(x.done?"✓":"")+'</button><div style="flex:1;min-width:0"><div style="'+(x.done?"text-decoration:line-through;color:var(--mu)":"")+'">'+e(x.t)+'</div><div class="cr" style="margin-top:4px;gap:6px">'
++(f?'<button class="chip" onclick="og('+x.r+')"><span style="width:8px;height:8px;border-radius:50%;background:'+f.n.c+'"></span>'+e(tr(f.n.n,22))+'</button>':(x.r?'<span class="m">Removed road</span>':''))
++'<span class="m">'+(x.r?x.w+" step"+(x.w==1?"":"s"):"")+(sb.length?(x.r?" · ":"")+sc+"/"+sb.length+" sub":"")+'</span>'+(tp?'<span class="m">↻ '+RL[tp.rep]+'</span><button class="sm" onclick="sr('+x.id+')">Stop repeat</button>':'')+'</div></div><button class="sm" onclick="tsb('+x.id+')" aria-label="Add sub-task">+ sub</button><button class="sm" onclick="xt('+x.id+')" aria-label="Delete task">×</button></div>';
+if(sb.length)s+='<div class="r" style="margin-left:40px;padding:2px 0"><span class="m">Sub-tasks move the road</span><button class="sm" onclick="lkt('+x.id+')">'+(x.lk?"On":"Off")+'</button></div>';
+sb.forEach(function(q,i){s+='<div class="r" style="gap:8px;margin-left:40px;padding:4px 0"><button class="ck sm'+(q.done?" on":"")+'" onclick="sk('+x.id+','+i+')" aria-label="Mark sub-task done">'+(q.done?"✓":"")+'</button><div style="flex:1;'+(q.done?"text-decoration:line-through;color:var(--mu)":"")+'">'+e(q.t)+'</div><button class="sm" onclick="xs('+x.id+','+i+')" aria-label="Delete sub-task">×</button></div>'});
+if(tdO==x.id)s+='<div style="display:flex;gap:8px;margin:6px 0 0 40px"><input id="sb'+x.id+'" placeholder="Sub-task" value="'+e(tdS)+'"/><button class="p" onclick="as_('+x.id+')">Add</button></div>'+(tp?'<div class="m" style="margin-left:40px">Sub-tasks you add or remove are kept for future days too.</div>':'');
+s+='</div>'});
+return s+'</div>'}
+function tk(id){var t=gt(id);if(!t)return;if(t.subs.length&&t.lk){var all=t.subs.every(function(q){return q.done});t.subs.forEach(function(q){q.done=all?0:1})}else t.done=t.done?0:1;sy(t);sv();R()}
+function sk(id,i){var t=gt(id);t.subs[i].done=t.subs[i].done?0:1;sy(t);sv();R()}
+function tsb(id){cp();tdO=tdO==id?0:id;tdS="";R(1);var i=$("sb"+id);if(i)i.focus()}
+function as_(id){var t=gt(id),i=$("sb"+id),v=i?i.value.trim():"";if(!t||!v)return;cp();t.subs.push({t:v,done:0});var tp=tpl(t);if(tp)tp.subs.push(v);tdS="";sy(t);sv();R(1);i=$("sb"+id);if(i)i.focus()}
+function xs(id,i){var t=gt(id),tp=tpl(t);if(tp){var k=tp.subs.indexOf(t.subs[i].t);if(k>=0)tp.subs.splice(k,1)}t.subs.splice(i,1);sy(t);sv();R()}
+function lkt(id){var t=gt(id);t.lk=t.lk?0:1;var tp=tpl(t);if(tp)tp.lk=t.lk;sy(t);sv();R()}
+function at(){var t=$("tt").value.trim(),r=+$("trd").value||0,w=Math.max(.25,parseFloat($("tw").value)||1),rp=$("trp").value;if(!t){toast="Write the task first";R();return}S.last=r;tdT="";tdW=String(w);tdP="none";
+if(rp!="none"){S.recur.push({id:S.u++,t:t,r:r,w:w,subs:[],rep:rp,d:td,skip:[]});mat(td)}else S.todos.push({id:S.u++,d:td,t:t,r:r,w:w,done:0,ap:0,subs:[]});toast="";sv();R(1)}
+function tpl(t){return t&&t.from?S.recur.filter(function(p){return p.id==t.from})[0]:null}
+function rm_(tp,ds){var dt=new Date(ds+"T00:00:00"),st=new Date(tp.d+"T00:00:00"),g=dt.getDay();if(dt<st)return false;if(tp.skip&&tp.skip.indexOf(ds)>=0)return false;if(tp.rep=="daily")return true;if(tp.rep=="weekdays")return g>0&&g<6;if(tp.rep=="weekly")return g==st.getDay();return false}
+function mat(ds){var n=0;S.recur.forEach(function(tp){if(rm_(tp,ds)&&!S.todos.some(function(x){return x.from==tp.id&&x.d==ds})){S.todos.push({id:S.u++,d:ds,t:tp.t,r:tp.r,w:tp.w,done:0,ap:0,lk:tp.lk||0,from:tp.id,subs:tp.subs.map(function(q){return{t:q,done:0}})});n++}});if(n)sv()}
+function xt(id){var t=gt(id),tp=tpl(t);if(tp)tp.skip.push(t.d);S.todos=S.todos.filter(function(x){return x.id!=id});sv();R()}
+function sr(id){var t=gt(id),tp=tpl(t);if(!tp)return;S.recur=S.recur.filter(function(p){return p.id!=tp.id});S.todos=S.todos.filter(function(x){return!(x.from==tp.id&&!x.done&&!x.ap&&x.d>t.d)});S.todos.forEach(function(x){if(x.from==tp.id)delete x.from});toast="Repeat stopped. Future days will not show this task.";sv();R()}
+function sh(n){var d=new Date(td+"T00:00:00");d.setDate(d.getDate()+n);td=ymd(d);toast="";R()}
+function setD(v){if(v){td=v;toast="";R()}}
+function tdo(){todo=1;tree=0;td=ymd(new Date());toast="";R()}
+function tdv(){todo=todo?0:1;tree=0;z=0;sel=-1;toast="";R()}
+function og(id){var f=fid(id);if(!f||!f.a.length)return;path=f.a.slice();sel=path[path.length-1].kids.indexOf(f.n);todo=0;tree=0;z=0;arm=0;toast="";R()}
 function openNote(i,k){var r=hub().kids[i];MD={i:i,k:k};
 $("md").innerHTML='<div style="position:fixed;left:0;right:0;top:0;bottom:0;background:rgba(0,0,0,.5);z-index:9;display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)cm()"><div class="c" style="width:100%;max-width:420px;margin:0"><b>'+e(tr(r.n,22))+' · Step '+k+'</b><textarea id="mt" placeholder="Write your note here">'+e(r.notes[k]||"")+'</textarea><div class="g2"><button class="p" onclick="ms()">Save</button><button onclick="mdl()">Delete</button></div><button style="width:100%;margin-top:8px" onclick="cm()">Close</button></div></div>';
 setTimeout(function(){var t=$("mt");if(t)t.focus()},50)}
@@ -159,9 +258,9 @@ function sn(){var r=hub().kids[sel],k=Math.min(r.N,Math.max(1,parseInt($("ns").v
 function en(k){var r=hub().kids[sel];dS=k;dT=r.notes[k];R(1);$("nt").focus()}
 function dn(k){delete hub().kids[sel].notes[k];sv();R(1)}
 function op(){path.push(hub().kids[sel]);sel=-1;arm=0;toast="";z=0;R()}
-function rm(){if(arm!=1){arm=1;R();return}hub().kids.splice(sel,1);sel=-1;arm=0;sv();R()}
+function rm(){if(arm!=1){arm=1;R();return}di(hub().kids[sel]);hub().kids.splice(sel,1);sel=-1;arm=0;sv();R()}
 function ar(){var n=$("rn2").value.trim(),N=parseInt($("rs").value)||0,h=hub();if(!n||N<1){toast="Enter a road name and a length of at least 1";R();return}toast="";h.kids.push(mk(n,N,0,0,nc(h.kids)));sel=h.kids.length-1;sv();R()}
-function dm(){if(arm!=2){arm=2;R();return}var id=path[0].id;S.goals.splice(S.goals.indexOf(path[0]),1);S.links=S.links.filter(function(l){return l[0]!=id&&l[1]!=id});path=[];sel=-1;arm=0;sv();R()}
-ld();R();
+function dm(){if(arm!=2){arm=2;R();return}var id=path[0].id;di(path[0]);S.goals.splice(S.goals.indexOf(path[0]),1);S.links=S.links.filter(function(l){return l[0]!=id&&l[1]!=id});path=[];sel=-1;arm=0;sv();R()}
+td=ymd(new Date());ld();R();idb(function(){R()});
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
 </script></body></html>
