@@ -53,18 +53,22 @@ function nc(l){var u=l.map(function(x){return x.c});for(var i=0;i<C.length;i++)i
 function pr(n){if(n.kids.length){var s=0;n.kids.forEach(function(k){s+=pr(k)});return s/n.kids.length}return n.p/n.N}
 function tot(n){if(n.kids.length){var s=0;n.kids.forEach(function(k){s+=tot(k)});return s}return n.N}
 function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(x){}}
-function ld(){try{var t=localStorage.getItem(K);if(t){S=JSON.parse(t);if(!S.todos)S.todos=[];if(!S.recur)S.recur=[];S.todos.forEach(function(x){if(!x.subs)x.subs=[]});return}}catch(x){}
+function ld(){try{var t=localStorage.getItem(K);if(t){S=JSON.parse(t);if(!S.todos)S.todos=[];if(!S.recur)S.recur=[];S.todos.forEach(function(x){if(!x.subs)x.subs=[]});S.todos.forEach(function(x){if(!x.g)x.g=gof(x.r)});S.recur.forEach(function(x){if(!x.g)x.g=gof(x.r)});return}}catch(x){}
 S={u:1,links:[],goals:[],todos:[],recur:[]};
 var a=mk("Pakistan affairs",20,6.5,0,C[0]),b=mk("Current affairs",30,9.5,0,C[1]),c=mk("Islamiat",20,7,0,C[2]);
 var gk=mk("GK",30,0,[a,b,c],C[5]),es=mk("Essay marks",12,3.5,0,C[0]),wr=mk("Writing",30,6.3,0,C[1]);
 var m1=mk("PMS Punjab exam",30,0,[gk,es,wr],C[3]);
 var w=mk("Walk daily",30,12,0,C[0]),ns=mk("No sugar",30,9,0,C[1]);
-S.goals=[m1,mk("Fitness",30,0,[w,ns],C[1])];var d0=ymd(new Date());S.recur.push({id:S.u++,t:"Read one editorial paragraph",r:es.id,w:.5,subs:[],rep:"daily",d:d0,skip:[]});[["Read Pakistan affairs chapter 3",a,1,["Read sections 1 and 2","Make short notes","Test 5 MCQs"]],["Write one practice essay",es,1],["Revise Islamiat notes",c,.5],["Buy a new notebook",{id:0},1]].forEach(function(x){S.todos.push({id:S.u++,d:d0,t:x[0],r:x[1].id,w:x[2],done:0,ap:0,subs:(x[3]||[]).map(function(q){return{t:q,done:0}})})})}
+var fit=mk("Fitness",30,0,[w,ns],C[1]);S.goals=[m1,fit];var d0=ymd(new Date());S.recur.push({id:S.u++,t:"Read one editorial paragraph",r:es.id,w:.5,subs:[],rep:"daily",d:d0,skip:[],g:m1.id});[["Read Pakistan affairs chapter 3",a,1,["Read sections 1 and 2","Make short notes","Test 5 MCQs"]],["Write one practice essay",es,1],["Revise Islamiat notes",c,.5],["Buy a new notebook",{id:0},1],["No sugar today",ns,1,0,fit.id],["Walk 30 minutes",w,.5,0,fit.id]].forEach(function(x){S.todos.push({id:S.u++,d:d0,g:x[4]||m1.id,t:x[0],r:x[1].id,w:x[2],done:0,ap:0,subs:(x[3]||[]).map(function(q){return{t:q,done:0}})})})}
+function gof(r){var f=r?fid(r):null;return f&&f.a.length?f.a[0].id:(S.goals[0]?S.goals[0].id:0)}
 function ymd(d){var p=function(n){return(n<10?"0":"")+n};return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())}
-function TC(){var d0=ymd(new Date());mat(d0);var a=S.todos.filter(function(x){return x.d==d0}),b=a.filter(function(x){return x.done}).length;return'<div class="c"><div class="r"><div><b>Today’s to-do</b><div class="m">'+(a.length?b+" of "+a.length+" done":"No tasks yet")+'</div></div><button class="p" onclick="tdo()">Open to-do</button></div></div>'}
+function TC(){var d0=ymd(new Date());mat(d0);var s='<div class="c"><b>Today’s to-do</b><div class="m">Each main goal has its own list.</div>';
+S.goals.forEach(function(g,i){var a=S.todos.filter(function(x){return x.d==d0&&x.g==g.id}),b=a.filter(function(x){return x.done}).length;
+s+='<div class="r" style="margin-top:8px;gap:8px"><div style="min-width:0"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+g.c+';margin-right:6px"></span><b>'+e(tr(g.n,24))+'</b><div class="m">'+(a.length?b+" of "+a.length+" done":"No tasks yet")+'</div></div><button class="p" onclick="tdo('+i+')">Open</button></div>'});
+return s+(S.goals.length?'':'<div class="m" style="margin-top:6px">Add a main goal first.</div>')+'</div>'}
 function hub(){return path.length?path[path.length-1]:null}
 function cr(){var h='<button onclick="go(-1)">Home</button>';path.forEach(function(n,i){h+='<span class="m">›</span>'+(i==path.length-1?'<b>'+e(tr(n.n,16))+'</b>':'<button onclick="go('+i+')">'+e(tr(n.n,16))+'</button>')});
-h+='<button style="margin-left:auto" onclick="tdv()">'+(todo?"Back":"To-do")+'</button><button onclick="tv()">'+(tree?"Back":"Whole picture")+'</button>';return'<div class="cr">'+h+'</div>'}
+h+=(path.length||todo?'<button style="margin-left:auto" onclick="tdv()">'+(todo?"Back":"To-do")+'</button><button onclick="tv()">':'<button style="margin-left:auto" onclick="tv()">')+(tree?"Back":"Whole picture")+'</button>';return'<div class="cr">'+h+'</div>'}
 function go(i){path=path.slice(0,i+1);sel=-1;arm=0;toast="";tree=0;todo=0;z=0;R()}
 function tv(){tree=tree?0:1;todo=0;z=0;sel=-1;R()}
 function R(k){if(!k){if($("nt")){dT=$("nt").value;dS=$("ns").value}if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value;tdN=$("tsn").value}if(tdO&&$("sb"+tdO))tdS=$("sb"+tdO).value}
@@ -194,7 +198,7 @@ return s+'<button style="width:100%;margin-top:8px" onclick="rm()">'+(arm==1?"Ta
 function AF(){var s='<div class="c"><b>Add a road to '+e(tr(hub().n,22))+'</b><div class="g2"><input id="rn2" placeholder="Islamiat"/><input id="rs" type="number" min="1" step="1" value="30" aria-label="Steps"/></div><div class="m" style="margin:4px 0 8px">Name, then road length in steps (30, 365 or any number). A longer road is drawn longer.</div><button class="p" style="width:100%" onclick="ar()">Add road</button></div>';
 if(path.length==1)s+='<button style="width:100%;margin-top:10px" onclick="dm()">'+(arm==2?"Tap again to delete":"Delete this goal")+'</button>';
 return s}
-function leaves(){var o=[];function w(n,a){if(n.kids.length)n.kids.forEach(function(c){w(c,a.concat([n]))});else if(a.length)o.push({n:n,a:a})}S.goals.forEach(function(g){w(g,[])});return o}
+function leaves(G){var o=[];function w(n,a){if(n.kids.length)n.kids.forEach(function(c){w(c,a.concat([n]))});else if(a.length)o.push({n:n,a:a})}(G?[G]:S.goals).forEach(function(g){w(g,[])});return o}
 function fid(id){var r=null;function w(n,a){if(r)return;if(n.id==id){r={n:n,a:a};return}n.kids.forEach(function(c){w(c,a.concat([n]))})}S.goals.forEach(function(g){w(g,[])});return r}
 function lb(f){return f.a.concat([f.n]).slice(-2).map(function(x){return x.n}).join(" › ")}
 function cp(){if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value;tdN=$("tsn").value}}
@@ -205,15 +209,15 @@ if(f.n.kids.length){toast="This road was split into sub-roads. Pick a sub-road f
 var r=f.n,o=r.p/r.N,d=Math.round((want-t.ap)*100)/100,np=Math.min(r.N,Math.max(0,Math.round((r.p+d)*100)/100)),a=Math.round((np-r.p)*100)/100;
 r.p=np;t.ap=Math.round((t.ap+a)*100)/100;
 if(a>0&&t.w>0){cel(o,r.p/r.N);var m=toast;toast=tr(r.n,18)+" +"+a+" step"+(a==1?"":"s")+(m?" · "+m:"")}else if(a<0&&t.w<0){toast=tr(r.n,18)+" −"+(-a)+" step"+(a==-1?"":"s")+" back"}}
-function ropt(sel){var o='<option value="0">No road (plain task)</option>',cur=null;leaves().forEach(function(x){var g0=x.a[0];if(g0!==cur){if(cur)o+='</optgroup>';o+='<optgroup label="'+e(g0.n)+'">';cur=g0}o+='<option value="'+x.n.id+'"'+(x.n.id==sel?" selected":"")+'>'+e(x.a.slice(1).concat([x.n]).map(function(y){return y.n}).join(" › "))+'</option>'});if(cur)o+='</optgroup>';return o}
+function ropt(sel){var o='<option value="0">No road (plain task)</option>',cur=null;leaves(path[0]).forEach(function(x){var gl=x.a.slice(1).map(function(y){return y.n}).join(" › ")||x.a[0].n;if(gl!==cur){if(cur!==null)o+='</optgroup>';o+='<optgroup label="'+e(gl)+'">';cur=gl}o+='<option value="'+x.n.id+'"'+(x.n.id==sel?" selected":"")+'>'+e(x.n.n)+'</option>'});if(cur!==null)o+='</optgroup>';return o}
 function wl(w){var a=Math.abs(w);return a+" step"+(a==1?"":"s")+(w<0?" back":"")}
 function asr(id,ml){return'<div style="display:flex;gap:8px;margin:6px 0 0 '+ml+'px"><input id="sb'+id+'" placeholder="Sub-task" value="'+e(tdS)+'"/><button class="p" onclick="as_('+id+')">Add</button></div>'}
 function us(){var r=$("trd"),s=$("sm"),p=$("trp"),g=$("tsn"),w=$("tw");if(!r||!s||!p||!g||!w)return;s.textContent=r.options[r.selectedIndex].text+" · "+(g.value=="-1"?"back ":"")+(Math.abs(parseFloat(w.value))||1)+" step · "+p.options[p.selectedIndex].text}
-function TD(){mat(td);var all=S.todos.filter(function(x){return x.d==td}),ts=all.filter(function(x){return!x.done}).concat(all.filter(function(x){return x.done})),dn=0,gn=0,s,RL={daily:"Every day",weekdays:"Mon–Fri",weekly:"Every week"};
+function TD(){mat(td);var G=path[0];if(!G)return'<div class="c">Open a main goal first, then tap To-do.</div>';var all=S.todos.filter(function(x){return x.d==td&&x.g==G.id}),ts=all.filter(function(x){return!x.done}).concat(all.filter(function(x){return x.done})),dn=0,gn=0,s,RL={daily:"Every day",weekdays:"Mon–Fri",weekly:"Every week"};
 all.forEach(function(x){if(x.done)dn++;gn+=x.ap||0});gn=Math.round(gn*100)/100;
 var dt=new Date(td+"T00:00:00"),lab=dt.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})+(td==ymd(new Date())?" · Today":"");
 var rpo=rpe(tdP);
-s='<div class="c"><div class="r"><button onclick="sh(-1)">‹</button><div style="text-align:center"><b>'+lab+'</b><div class="m">'+dn+' of '+all.length+' done · '+(gn<0?"−":"+")+Math.abs(gn)+' steps</div></div><button onclick="sh(1)">›</button></div><input type="date" value="'+td+'" onchange="setD(this.value)" style="margin-top:8px" aria-label="Date"/>';
+s='<div class="c"><div class="m" style="margin-bottom:6px">To-do for <b style="color:var(--tx)">'+e(tr(G.n,30))+'</b></div><div class="r"><button onclick="sh(-1)">‹</button><div style="text-align:center"><b>'+lab+'</b><div class="m">'+dn+' of '+all.length+' done · '+(gn<0?"−":"+")+Math.abs(gn)+' steps</div></div><button onclick="sh(1)">›</button></div><input type="date" value="'+td+'" onchange="setD(this.value)" style="margin-top:8px" aria-label="Date"/>';
 if(toast)s+='<div class="ts" style="margin-top:8px">★ '+e(toast)+'</div>';
 if(!ts.length)s+='<div class="m" style="margin-top:14px">No tasks for this day yet. Add one below.</div>';
 ts.forEach(function(x){var f=x.r?fid(x.r):null,sb=x.subs,sc=sb.filter(function(q){return q.done}).length,tp=tpl(x),w=x.w;
@@ -232,12 +236,12 @@ sb.forEach(function(q,i){s+='<div class="r" style="gap:8px;margin-left:40px;padd
 if(tdO==x.id)s+=asr(x.id,40)+(tp?'<div class="m" style="margin-left:40px">Sub-tasks you add or remove are kept for future days too.</div>':'')}
 s+='</div>'});
 s+='</div>';
-s+='<div class="c" style="padding:10px"><div style="display:flex;gap:8px"><input id="tt" placeholder="Add a task…" value="'+e(tdT)+'"/><button class="p" onclick="at()">Add</button></div><div class="g2"><label class="m">Road (subject)<select id="trd" onchange="S.last=+this.value">'+ropt(S.last)+'</select></label><label class="m">Repeat<select id="trp">'+rpo+'</select></label></div><label class="m" style="margin-top:8px">Counts as (steps)<div style="display:flex;gap:6px"><select id="tsn" style="width:84px;flex:none"><option value="1"'+(tdN=="-1"?"":" selected")+'>Forward</option><option value="-1"'+(tdN=="-1"?" selected":"")+'>Back</option></select><input id="tw" type="number" min="0.25" step="0.25" value="'+e(tdW||"1")+'"/></div></label><div class="m" style="margin-top:6px">Tick a task and its road moves forward, or back for a “Back” task. Pick a Repeat option to make a task come back every day, on weekdays or every week. Tap Edit on any task to change it or stop repeating.</div></div>';
+s+='<div class="c" style="padding:10px"><div style="display:flex;gap:8px"><input id="tt" placeholder="Add a task…" value="'+e(tdT)+'"/><button class="p" onclick="at()">Add</button></div><div class="g2"><label class="m">Road (subject)<select id="trd" onchange="S.lg=S.lg||{};S.lg[path[0].id]=+this.value">'+ropt((S.lg||{})[G.id])+'</select></label><label class="m">Repeat<select id="trp">'+rpo+'</select></label></div><label class="m" style="margin-top:8px">Counts as (steps)<div style="display:flex;gap:6px"><select id="tsn" style="width:84px;flex:none"><option value="1"'+(tdN=="-1"?"":" selected")+'>Forward</option><option value="-1"'+(tdN=="-1"?" selected":"")+'>Back</option></select><input id="tw" type="number" min="0.25" step="0.25" value="'+e(tdW||"1")+'"/></div></label><div class="m" style="margin-top:6px">Tick a task and its road moves forward, or back for a “Back” task. Pick a Repeat option to make a task come back every day, on weekdays or every week. Tap Edit on any task to change it or stop repeating.</div></div>';
 return s}
 function rpe(sel){return[["none","Does not repeat"],["daily","Every day"],["weekdays","Weekdays (Mon–Fri)"],["weekly","Every week"]].map(function(v){return'<option value="'+v[0]+'"'+(sel==v[0]?" selected":"")+'>'+v[1]+'</option>'}).join("")}
 function erp(id,v){var t=gt(id),tp=tpl(t);if(!t)return;if(v=="none"){if(tp)sr(id);else R();return}
 if(tp){tp.rep=v;tp.d=t.d;S.todos=S.todos.filter(function(x){return!(x.from==tp.id&&x.d>t.d&&!x.done&&!x.ap&&!rm_(tp,x.d))})}
-else{tp={id:S.u++,t:t.t,r:t.r,w:t.w,lk:t.lk||0,subs:t.subs.map(function(q){return q.t}),rep:v,d:t.d,skip:[]};S.recur.push(tp);t.from=tp.id}
+else{tp={id:S.u++,g:t.g,t:t.t,r:t.r,w:t.w,lk:t.lk||0,subs:t.subs.map(function(q){return q.t}),rep:v,d:t.d,skip:[]};S.recur.push(tp);t.from=tp.id}
 toast="Now repeating "+({daily:"every day",weekdays:"Monday to Friday",weekly:"every week"})[v]+", starting this day.";sv();R()}
 function ee(id){cp();tdE=tdE==id?0:id;R(1)}
 function ret(t){var f=t.r?fid(t.r):null;if(f&&!f.n.kids.length&&t.ap){var r=f.n;r.p=Math.min(r.N,Math.max(0,Math.round((r.p-t.ap)*100)/100))}t.ap=0}
@@ -251,17 +255,17 @@ function tsb(id){cp();tdO=tdO==id?0:id;tdS="";R(1);var i=$("sb"+id);if(i)i.focus
 function as_(id){var t=gt(id),i=$("sb"+id),v=i?i.value.trim():"";if(!t||!v)return;cp();t.subs.push({t:v,done:0});var tp=tpl(t);if(tp)tp.subs.push(v);tdS="";sy(t);sv();R(1);i=$("sb"+id);if(i)i.focus()}
 function xs(id,i){var t=gt(id),tp=tpl(t);if(tp){var k=tp.subs.indexOf(t.subs[i].t);if(k>=0)tp.subs.splice(k,1)}t.subs.splice(i,1);sy(t);sv();R()}
 function lkt(id){var t=gt(id);t.lk=t.lk?0:1;var tp=tpl(t);if(tp)tp.lk=t.lk;sy(t);sv();R()}
-function at(){var t=$("tt").value.trim(),r=+$("trd").value||0,v=parseFloat($("tw").value),g=($("tsn").value=="-1"||v<0)?-1:1,w=g*Math.max(.25,Math.abs(v)||1),rp=$("trp").value;if(!t){toast="Write the task first";R();return}S.last=r;tdT="";tdW=String(Math.abs(w));tdN="1";tdP="none";
-if(rp!="none"){S.recur.push({id:S.u++,t:t,r:r,w:w,subs:[],rep:rp,d:td,skip:[]});mat(td)}else S.todos.push({id:S.u++,d:td,t:t,r:r,w:w,done:0,ap:0,subs:[]});toast="";sv();R(1)}
+function at(){var G=path[0],t=$("tt").value.trim(),r=+$("trd").value||0,v=parseFloat($("tw").value),g=($("tsn").value=="-1"||v<0)?-1:1,w=g*Math.max(.25,Math.abs(v)||1),rp=$("trp").value;if(!G)return;if(!t){toast="Write the task first";R();return}S.lg=S.lg||{};S.lg[G.id]=r;tdT="";tdW=String(Math.abs(w));tdN="1";tdP="none";
+if(rp!="none"){S.recur.push({id:S.u++,g:G.id,t:t,r:r,w:w,subs:[],rep:rp,d:td,skip:[]});mat(td)}else S.todos.push({id:S.u++,g:G.id,d:td,t:t,r:r,w:w,done:0,ap:0,subs:[]});toast="";sv();R(1)}
 function tpl(t){return t&&t.from?S.recur.filter(function(p){return p.id==t.from})[0]:null}
 function rm_(tp,ds){var dt=new Date(ds+"T00:00:00"),st=new Date(tp.d+"T00:00:00"),g=dt.getDay();if(dt<st)return false;if(tp.skip&&tp.skip.indexOf(ds)>=0)return false;if(tp.rep=="daily")return true;if(tp.rep=="weekdays")return g>0&&g<6;if(tp.rep=="weekly")return g==st.getDay();return false}
-function mat(ds){var n=0;S.recur.forEach(function(tp){if(rm_(tp,ds)&&!S.todos.some(function(x){return x.from==tp.id&&x.d==ds})){S.todos.push({id:S.u++,d:ds,t:tp.t,r:tp.r,w:tp.w,done:0,ap:0,lk:tp.lk||0,from:tp.id,subs:tp.subs.map(function(q){return{t:q,done:0}})});n++}});if(n)sv()}
+function mat(ds){var n=0;S.recur.forEach(function(tp){if(rm_(tp,ds)&&!S.todos.some(function(x){return x.from==tp.id&&x.d==ds})){S.todos.push({id:S.u++,g:tp.g,d:ds,t:tp.t,r:tp.r,w:tp.w,done:0,ap:0,lk:tp.lk||0,from:tp.id,subs:tp.subs.map(function(q){return{t:q,done:0}})});n++}});if(n)sv()}
 function xt(id){var t=gt(id),tp=tpl(t);if(tp)tp.skip.push(t.d);S.todos=S.todos.filter(function(x){return x.id!=id});sv();R()}
 function sr(id){var t=gt(id),tp=tpl(t);if(!tp)return;S.recur=S.recur.filter(function(p){return p.id!=tp.id});S.todos=S.todos.filter(function(x){return!(x.from==tp.id&&!x.done&&!x.ap&&x.d>t.d)});S.todos.forEach(function(x){if(x.from==tp.id)delete x.from});toast="Repeat stopped. Future days will not show this task.";sv();R()}
 function sh(n){var d=new Date(td+"T00:00:00");d.setDate(d.getDate()+n);td=ymd(d);toast="";R()}
 function setD(v){if(v){td=v;toast="";R()}}
-function tdo(){todo=1;tree=0;td=ymd(new Date());toast="";R()}
-function tdv(){todo=todo?0:1;tree=0;z=0;sel=-1;toast="";R()}
+function tdo(i){path=[S.goals[i]];sel=-1;arm=0;todo=1;tree=0;z=0;td=ymd(new Date());toast="";R()}
+function tdv(){if(!todo&&!path.length)return;todo=todo?0:1;tree=0;z=0;sel=-1;toast="";R()}
 function og(id){var f=fid(id);if(!f||!f.a.length)return;path=f.a.slice();sel=path[path.length-1].kids.indexOf(f.n);todo=0;tree=0;z=0;arm=0;toast="";R()}
 function openNote(i,k){var r=hub().kids[i];MD={i:i,k:k};
 $("md").innerHTML='<div style="position:fixed;left:0;right:0;top:0;bottom:0;background:rgba(0,0,0,.5);z-index:9;display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)cm()"><div class="c" style="width:100%;max-width:420px;margin:0"><b>'+e(tr(r.n,22))+' · Step '+k+'</b><textarea id="mt" placeholder="Write your note here">'+e(r.notes[k]||"")+'</textarea><div class="g2"><button class="p" onclick="ms()">Save</button><button onclick="mdl()">Delete</button></div><button style="width:100%;margin-top:8px" onclick="cm()">Close</button></div></div>';
@@ -283,7 +287,7 @@ function dn(k){delete hub().kids[sel].notes[k];sv();R(1)}
 function op(){path.push(hub().kids[sel]);sel=-1;arm=0;toast="";z=0;R()}
 function rm(){if(arm!=1){arm=1;R();return}di(hub().kids[sel]);hub().kids.splice(sel,1);sel=-1;arm=0;sv();R()}
 function ar(){var n=$("rn2").value.trim(),N=parseInt($("rs").value)||0,h=hub();if(!n||N<1){toast="Enter a road name and a length of at least 1";R();return}toast="";h.kids.push(mk(n,N,0,0,nc(h.kids)));sel=h.kids.length-1;sv();R()}
-function dm(){if(arm!=2){arm=2;R();return}var id=path[0].id;di(path[0]);S.goals.splice(S.goals.indexOf(path[0]),1);S.links=S.links.filter(function(l){return l[0]!=id&&l[1]!=id});path=[];sel=-1;arm=0;sv();R()}
+function dm(){if(arm!=2){arm=2;R();return}var id=path[0].id;di(path[0]);S.goals.splice(S.goals.indexOf(path[0]),1);S.links=S.links.filter(function(l){return l[0]!=id&&l[1]!=id});S.todos=S.todos.filter(function(x){return x.g!=id});S.recur=S.recur.filter(function(x){return x.g!=id});path=[];sel=-1;arm=0;sv();R()}
 td=ymd(new Date());ld();R();idb(function(){R()});
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
 </script></body></html>
