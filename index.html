@@ -25,6 +25,8 @@ label{display:block}
 .m{color:var(--mu);font-size:13px}
 .ts{border:1px solid var(--gd);color:var(--gd);border-radius:8px;padding:8px;margin-bottom:8px;font-weight:600}
 .ck{width:30px;height:30px;padding:0;border-radius:8px;flex:none;font-size:18px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.g3 button{padding:8px 4px}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
 .sm{padding:3px 9px;font-size:13px}
 .ck.sm{width:24px;height:24px;font-size:14px;border-radius:6px;padding:0}
@@ -38,7 +40,7 @@ svg text.mu{fill:var(--mu)}
 <div class="w" id="app"></div><div id="md"></div><input type="file" accept="image/*" id="fi" style="display:none" onchange="pf(this)">
 <script>
 var K="goalroads.v1",C=["#7F77DD","#1D9E75","#D85A30","#378ADD","#BA7517","#D4537E","#639922","#E24B4A"];
-var todo=0,td="",tdT="",tdW="1",tdO=0,tdS="",tdP="none";
+var todo=0,td="",tdT="",tdW="1",tdO=0,tdS="",tdP="none",tdN="1",tdX=0,tdE=0;
 var vm="tree",cf=0,IM={},DB=null,IT=0;
 var S,path=[],sel=-1,mode=0,lk=-1,arm=0,toast="",dS="",dT="",tree=0,z=0,WW=380,HH=500,TN=[],raf=0,pnz=0,MD=null;
 var NS="http://www.w3.org/2000/svg";
@@ -65,10 +67,10 @@ function cr(){var h='<button onclick="go(-1)">Home</button>';path.forEach(functi
 h+='<button style="margin-left:auto" onclick="tdv()">'+(todo?"Back":"To-do")+'</button><button onclick="tv()">'+(tree?"Back":"Whole picture")+'</button>';return'<div class="cr">'+h+'</div>'}
 function go(i){path=path.slice(0,i+1);sel=-1;arm=0;toast="";tree=0;todo=0;z=0;R()}
 function tv(){tree=tree?0:1;todo=0;z=0;sel=-1;R()}
-function R(k){if(!k){if($("nt")){dT=$("nt").value;dS=$("ns").value}if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value}if(tdO&&$("sb"+tdO))tdS=$("sb"+tdO).value}
+function R(k){if(!k){if($("nt")){dT=$("nt").value;dS=$("ns").value}if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value;tdN=$("tsn").value}if(tdO&&$("sb"+tdO))tdS=$("sb"+tdO).value}
 var wt=!!$("tt"),py=window.scrollY,m=$("mp"),rs=!z,sx=m?m.scrollLeft:0,sy=m?m.scrollTop:0;
 $("app").innerHTML=cr()+(todo?TD():tree?TV():path.length?HV():HM());
-m=$("mp");if(m){draw();bind(m);if(!rs){m.scrollLeft=sx;m.scrollTop=sy}}if(wt&&todo)window.scrollTo(0,py)}
+m=$("mp");if(m){draw();bind(m);if(!rs){m.scrollLeft=sx;m.scrollTop=sy}}if(wt&&todo)window.scrollTo(0,py);if($("sm"))us()}
 function HM(){var n=S.goals.length,H=Math.max(160,Math.ceil(n/2)*150+20),p={},s=TC()+'<div class="c"><div class="r"><b>My main goals</b><button onclick="mode=!mode;lk=-1;R()">'+(mode?"Done linking":"Link goals")+'</button></div>';
 if(mode)s+='<div class="m">Tap two goals to link or unlink them.</div>';
 s+='<svg viewBox="0 0 380 '+H+'" style="width:100%">';
@@ -184,7 +186,7 @@ s+='<button class="p" style="width:100%;margin-top:8px" onclick="op()">Open sub-
 else{var d=Math.floor(r.p+1e-4),f=r.p/r.N,nx=0;[25,50,75,100].forEach(function(q){if(!nx&&q/100>f+1e-4)nx=q});
 s+='<div class="g2"><label class="m">Steps done<input type="number" min="0" step="0.25" value="'+r.p+'" onchange="sd(this.value)"/></label><label class="m">Road length (steps)<input type="number" min="1" step="1" value="'+r.N+'" onchange="sl(this.value)"/></label></div>';
 s+='<div class="r"><span class="m">'+(f>=1?"Road complete":"Next celebration")+'</span><b>'+(f>=1?"100%":nx+"%")+'</b></div>';
-s+='<div class="g2"><button onclick="inc(.25)">+ quarter</button><button onclick="inc(.5)">+ half</button><button onclick="inc(1)">+ full step</button><button onclick="inc(-.25)">− undo quarter</button></div>';
+s+='<div class="g3"><button onclick="inc(-.25)">− quarter</button><button onclick="inc(-.5)">− half</button><button onclick="inc(-1)">− full</button><button onclick="inc(.25)">+ quarter</button><button onclick="inc(.5)">+ half</button><button onclick="inc(1)">+ full</button></div>';
 s+='<div style="margin-top:12px"><b>Notes on this road</b></div><div class="m">Tip: tap a dot on this road to add a note at that step.</div><label class="m" style="margin-top:6px">Step number<input id="ns" type="number" min="1" value="'+(dS||Math.min(r.N,d+1))+'"/></label><textarea id="nt" placeholder="Today I read 30 pages. Chapter 4.">'+e(dT)+'</textarea><button class="p" style="width:100%;margin-top:6px" onclick="sn()">Save note</button>';
 Object.keys(r.notes).sort(function(a,b){return b-a}).forEach(function(k){s+='<div class="r" style="border-top:1px solid var(--bd);margin-top:6px;padding-top:6px;gap:8px;align-items:flex-start"><div><b>Step '+k+'</b><div class="m" style="white-space:pre-wrap">'+e(r.notes[k])+'</div></div><div style="white-space:nowrap"><button onclick="en('+k+')">Edit</button> <button onclick="dn('+k+')">×</button></div></div>'});
 s+='<button style="width:100%;margin-top:10px" onclick="op()">Split into sub-roads</button>'}
@@ -195,40 +197,61 @@ return s}
 function leaves(){var o=[];function w(n,a){if(n.kids.length)n.kids.forEach(function(c){w(c,a.concat([n]))});else if(a.length)o.push({n:n,a:a})}S.goals.forEach(function(g){w(g,[])});return o}
 function fid(id){var r=null;function w(n,a){if(r)return;if(n.id==id){r={n:n,a:a};return}n.kids.forEach(function(c){w(c,a.concat([n]))})}S.goals.forEach(function(g){w(g,[])});return r}
 function lb(f){return f.a.concat([f.n]).slice(-2).map(function(x){return x.n}).join(" › ")}
-function cp(){if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value}}
+function cp(){if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value;tdN=$("tsn").value}}
 function gt(id){return S.todos.filter(function(x){return x.id==id})[0]}
 function sy(t){var n=t.subs.length,dn=t.subs.filter(function(q){return q.done}).length,lk=n&&t.lk;if(lk)t.done=dn==n?1:0;
 var want=lk?Math.round(t.w*dn/n*100)/100:(t.done?t.w:0),f=t.r?fid(t.r):null;toast="";if(!f)return;
 if(f.n.kids.length){toast="This road was split into sub-roads. Pick a sub-road for this task.";return}
 var r=f.n,o=r.p/r.N,d=Math.round((want-t.ap)*100)/100,np=Math.min(r.N,Math.max(0,Math.round((r.p+d)*100)/100)),a=Math.round((np-r.p)*100)/100;
 r.p=np;t.ap=Math.round((t.ap+a)*100)/100;
-if(a>0){cel(o,r.p/r.N);var m=toast;toast=tr(r.n,18)+" +"+a+" step"+(a==1?"":"s")+(m?" · "+m:"")}}
-function TD(){mat(td);var L=leaves(),all=S.todos.filter(function(x){return x.d==td}),ts=all.filter(function(x){return!x.done}).concat(all.filter(function(x){return x.done})),dn=0,gn=0,s,RL={daily:"Every day",weekdays:"Mon–Fri",weekly:"Every week"};
-all.forEach(function(x){if(x.done)dn++;gn+=x.ap||0});
+if(a>0&&t.w>0){cel(o,r.p/r.N);var m=toast;toast=tr(r.n,18)+" +"+a+" step"+(a==1?"":"s")+(m?" · "+m:"")}else if(a<0&&t.w<0){toast=tr(r.n,18)+" −"+(-a)+" step"+(a==-1?"":"s")+" back"}}
+function ropt(sel){var o='<option value="0">No road (plain task)</option>',cur=null;leaves().forEach(function(x){var g0=x.a[0];if(g0!==cur){if(cur)o+='</optgroup>';o+='<optgroup label="'+e(g0.n)+'">';cur=g0}o+='<option value="'+x.n.id+'"'+(x.n.id==sel?" selected":"")+'>'+e(x.a.slice(1).concat([x.n]).map(function(y){return y.n}).join(" › "))+'</option>'});if(cur)o+='</optgroup>';return o}
+function wl(w){var a=Math.abs(w);return a+" step"+(a==1?"":"s")+(w<0?" back":"")}
+function asr(id,ml){return'<div style="display:flex;gap:8px;margin:6px 0 0 '+ml+'px"><input id="sb'+id+'" placeholder="Sub-task" value="'+e(tdS)+'"/><button class="p" onclick="as_('+id+')">Add</button></div>'}
+function us(){var r=$("trd"),s=$("sm"),p=$("trp"),g=$("tsn"),w=$("tw");if(!r||!s||!p||!g||!w)return;s.textContent=r.options[r.selectedIndex].text+" · "+(g.value=="-1"?"back ":"")+(Math.abs(parseFloat(w.value))||1)+" step · "+p.options[p.selectedIndex].text}
+function TD(){mat(td);var all=S.todos.filter(function(x){return x.d==td}),ts=all.filter(function(x){return!x.done}).concat(all.filter(function(x){return x.done})),dn=0,gn=0,s,RL={daily:"Every day",weekdays:"Mon–Fri",weekly:"Every week"};
+all.forEach(function(x){if(x.done)dn++;gn+=x.ap||0});gn=Math.round(gn*100)/100;
 var dt=new Date(td+"T00:00:00"),lab=dt.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})+(td==ymd(new Date())?" · Today":"");
-var o='<option value="0">No road (plain task)</option>',cur=null;L.forEach(function(x){var g0=x.a[0];if(g0!==cur){if(cur)o+='</optgroup>';o+='<optgroup label="'+e(g0.n)+'">';cur=g0}o+='<option value="'+x.n.id+'"'+(x.n.id==S.last?" selected":"")+'>'+e(x.a.slice(1).concat([x.n]).map(function(y){return y.n}).join(" › "))+'</option>'});if(cur)o+='</optgroup>';
-var rpo=[["none","Does not repeat"],["daily","Every day"],["weekdays","Weekdays (Mon–Fri)"],["weekly","Every week"]].map(function(v){return'<option value="'+v[0]+'"'+(tdP==v[0]?" selected":"")+'>'+v[1]+'</option>'}).join("");
-s='<div class="c"><div class="r"><button onclick="sh(-1)">‹</button><div style="text-align:center"><b>'+lab+'</b><div class="m">'+dn+' of '+all.length+' done · +'+Math.round(gn*100)/100+' steps</div></div><button onclick="sh(1)">›</button></div><input type="date" value="'+td+'" onchange="setD(this.value)" style="margin-top:8px" aria-label="Date"/>';
+var rpo=rpe(tdP);
+s='<div class="c"><div class="r"><button onclick="sh(-1)">‹</button><div style="text-align:center"><b>'+lab+'</b><div class="m">'+dn+' of '+all.length+' done · '+(gn<0?"−":"+")+Math.abs(gn)+' steps</div></div><button onclick="sh(1)">›</button></div><input type="date" value="'+td+'" onchange="setD(this.value)" style="margin-top:8px" aria-label="Date"/>';
 if(toast)s+='<div class="ts" style="margin-top:8px">★ '+e(toast)+'</div>';
-s+='<div style="margin-top:10px"><input id="tt" placeholder="Write a task, for example: Read chapter 3" value="'+e(tdT)+'"/><div class="g2"><label class="m">Road (subject)<select id="trd" onchange="S.last=+this.value">'+o+'</select></label><label class="m">Counts as (steps)<input id="tw" type="number" min="0.25" step="0.25" value="'+e(tdW)+'"/></label></div><label class="m" style="margin-top:8px">Repeat<select id="trp">'+rpo+'</select></label><button class="p" style="width:100%;margin-top:8px" onclick="at()">Add task</button></div>';
-s+='<div class="m" style="margin-top:6px">Tick a task and its road moves forward. Sub-tasks are only a checklist unless you switch “Sub-tasks move the road” on.</div>';
-if(!ts.length)s+='<div class="m" style="margin-top:14px">No tasks for this day yet.</div>';
-ts.forEach(function(x){var f=x.r?fid(x.r):null,sb=x.subs,sc=sb.filter(function(q){return q.done}).length,tp=tpl(x);
-s+='<div style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px"><div class="r" style="gap:10px;align-items:flex-start"><button class="ck'+(x.done?" on":"")+'" onclick="tk('+x.id+')" aria-label="Mark done">'+(x.done?"✓":"")+'</button><div style="flex:1;min-width:0"><div style="'+(x.done?"text-decoration:line-through;color:var(--mu)":"")+'">'+e(x.t)+'</div><div class="cr" style="margin-top:4px;gap:6px">'
+if(!ts.length)s+='<div class="m" style="margin-top:14px">No tasks for this day yet. Add one below.</div>';
+ts.forEach(function(x){var f=x.r?fid(x.r):null,sb=x.subs,sc=sb.filter(function(q){return q.done}).length,tp=tpl(x),w=x.w;
+s+='<div style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px">';
+if(tdE==x.id){
+s+='<input value="'+e(x.t)+'" onchange="etx('+x.id+',this.value)" aria-label="Task name"/><div class="g2"><label class="m">Road<select onchange="etr('+x.id+',+this.value)">'+ropt(x.r)+'</select></label><label class="m">Steps<div style="display:flex;gap:6px"><select id="esg'+x.id+'" style="width:84px;flex:none" onchange="ets('+x.id+')"><option value="1"'+(w<0?"":" selected")+'>Forward</option><option value="-1"'+(w<0?" selected":"")+'>Back</option></select><input id="esn'+x.id+'" type="number" min="0.25" step="0.25" value="'+Math.abs(w)+'" onchange="ets('+x.id+')"/></div></label></div><label class="m" style="margin-top:8px">Repeat<select onchange="erp('+x.id+',this.value)">'+rpe(tp?tp.rep:"none")+'</select></label>'+(tp?'<button style="width:100%;margin-top:8px" onclick="sr('+x.id+')">Stop repeating</button>':'');
+sb.forEach(function(q,i){s+='<div class="r" style="gap:8px;margin-top:6px"><input value="'+e(q.t)+'" onchange="esu('+x.id+','+i+',this.value)" aria-label="Sub-task"/><button class="sm" onclick="xs('+x.id+','+i+')" aria-label="Delete sub-task">×</button></div>'});
+if(tdO==x.id)s+=asr(x.id,0);
+s+='<div class="g2"><button onclick="tsb('+x.id+')">+ sub-task</button><button class="p" onclick="ee(0)">Done</button></div>'+(tp?'<div class="m" style="margin-top:6px">Changes here also apply to future days.</div>':'')}
+else{
+s+='<div class="r" style="gap:10px;align-items:flex-start"><button class="ck'+(x.done?" on":"")+'" onclick="tk('+x.id+')" aria-label="Mark done">'+(x.done?"✓":"")+'</button><div style="flex:1;min-width:0"><div style="'+(x.done?"text-decoration:line-through;color:var(--mu)":"")+'">'+e(x.t)+'</div><div class="cr" style="margin-top:4px;gap:6px">'
 +(f?'<button class="chip" onclick="og('+x.r+')"><span style="width:8px;height:8px;border-radius:50%;background:'+f.n.c+'"></span>'+e(tr(f.n.n,22))+'</button>':(x.r?'<span class="m">Removed road</span>':''))
-+'<span class="m">'+(x.r?x.w+" step"+(x.w==1?"":"s"):"")+(sb.length?(x.r?" · ":"")+sc+"/"+sb.length+" sub":"")+'</span>'+(tp?'<span class="m">↻ '+RL[tp.rep]+'</span><button class="sm" onclick="sr('+x.id+')">Stop repeat</button>':'')+'</div></div><button class="sm" onclick="tsb('+x.id+')" aria-label="Add sub-task">+ sub</button><button class="sm" onclick="xt('+x.id+')" aria-label="Delete task">×</button></div>';
++'<span class="m">'+(x.r?wl(w):"")+(sb.length?(x.r?" · ":"")+sc+"/"+sb.length+" sub":"")+'</span>'+(tp?'<span class="m">↻ '+RL[tp.rep]+'</span><button class="sm" onclick="sr('+x.id+')">Stop repeat</button>':'')+'</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:140px"><button class="sm" onclick="ee('+x.id+')">Edit</button><button class="sm" onclick="tsb('+x.id+')" aria-label="Add sub-task">+ sub</button><button class="sm" onclick="xt('+x.id+')" aria-label="Delete task">×</button></div></div>';
 if(sb.length)s+='<div class="r" style="margin-left:40px;padding:2px 0"><span class="m">Sub-tasks move the road</span><button class="sm" onclick="lkt('+x.id+')">'+(x.lk?"On":"Off")+'</button></div>';
 sb.forEach(function(q,i){s+='<div class="r" style="gap:8px;margin-left:40px;padding:4px 0"><button class="ck sm'+(q.done?" on":"")+'" onclick="sk('+x.id+','+i+')" aria-label="Mark sub-task done">'+(q.done?"✓":"")+'</button><div style="flex:1;'+(q.done?"text-decoration:line-through;color:var(--mu)":"")+'">'+e(q.t)+'</div><button class="sm" onclick="xs('+x.id+','+i+')" aria-label="Delete sub-task">×</button></div>'});
-if(tdO==x.id)s+='<div style="display:flex;gap:8px;margin:6px 0 0 40px"><input id="sb'+x.id+'" placeholder="Sub-task" value="'+e(tdS)+'"/><button class="p" onclick="as_('+x.id+')">Add</button></div>'+(tp?'<div class="m" style="margin-left:40px">Sub-tasks you add or remove are kept for future days too.</div>':'');
+if(tdO==x.id)s+=asr(x.id,40)+(tp?'<div class="m" style="margin-left:40px">Sub-tasks you add or remove are kept for future days too.</div>':'')}
 s+='</div>'});
-return s+'</div>'}
+s+='</div>';
+s+='<div class="c" style="padding:10px"><div style="display:flex;gap:8px"><input id="tt" placeholder="Add a task…" value="'+e(tdT)+'"/><button class="p" onclick="at()">Add</button></div><div class="g2"><label class="m">Road (subject)<select id="trd" onchange="S.last=+this.value">'+ropt(S.last)+'</select></label><label class="m">Repeat<select id="trp">'+rpo+'</select></label></div><label class="m" style="margin-top:8px">Counts as (steps)<div style="display:flex;gap:6px"><select id="tsn" style="width:84px;flex:none"><option value="1"'+(tdN=="-1"?"":" selected")+'>Forward</option><option value="-1"'+(tdN=="-1"?" selected":"")+'>Back</option></select><input id="tw" type="number" min="0.25" step="0.25" value="'+e(tdW||"1")+'"/></div></label><div class="m" style="margin-top:6px">Tick a task and its road moves forward, or back for a “Back” task. Pick a Repeat option to make a task come back every day, on weekdays or every week. Tap Edit on any task to change it or stop repeating.</div></div>';
+return s}
+function rpe(sel){return[["none","Does not repeat"],["daily","Every day"],["weekdays","Weekdays (Mon–Fri)"],["weekly","Every week"]].map(function(v){return'<option value="'+v[0]+'"'+(sel==v[0]?" selected":"")+'>'+v[1]+'</option>'}).join("")}
+function erp(id,v){var t=gt(id),tp=tpl(t);if(!t)return;if(v=="none"){if(tp)sr(id);else R();return}
+if(tp){tp.rep=v;tp.d=t.d;S.todos=S.todos.filter(function(x){return!(x.from==tp.id&&x.d>t.d&&!x.done&&!x.ap&&!rm_(tp,x.d))})}
+else{tp={id:S.u++,t:t.t,r:t.r,w:t.w,lk:t.lk||0,subs:t.subs.map(function(q){return q.t}),rep:v,d:t.d,skip:[]};S.recur.push(tp);t.from=tp.id}
+toast="Now repeating "+({daily:"every day",weekdays:"Monday to Friday",weekly:"every week"})[v]+", starting this day.";sv();R()}
+function ee(id){cp();tdE=tdE==id?0:id;R(1)}
+function ret(t){var f=t.r?fid(t.r):null;if(f&&!f.n.kids.length&&t.ap){var r=f.n;r.p=Math.min(r.N,Math.max(0,Math.round((r.p-t.ap)*100)/100))}t.ap=0}
+function etx(id,v){var t=gt(id),tp=tpl(t);v=v.trim();if(t&&v){t.t=v;if(tp)tp.t=v;sv()}R()}
+function etr(id,v){var t=gt(id),tp=tpl(t);ret(t);t.r=v;if(tp)tp.r=v;sy(t);sv();R()}
+function ets(id){var t=gt(id),tp=tpl(t),g=+$("esg"+id).value,n=Math.max(.25,Math.abs(parseFloat($("esn"+id).value))||1),w=g*n;ret(t);t.w=w;if(tp)tp.w=w;sy(t);sv();R()}
+function esu(id,i,v){var t=gt(id),tp=tpl(t);v=v.trim();if(t&&v){var k=tp?tp.subs.indexOf(t.subs[i].t):-1;t.subs[i].t=v;if(k>=0)tp.subs[k]=v;sv()}R()}
 function tk(id){var t=gt(id);if(!t)return;if(t.subs.length&&t.lk){var all=t.subs.every(function(q){return q.done});t.subs.forEach(function(q){q.done=all?0:1})}else t.done=t.done?0:1;sy(t);sv();R()}
 function sk(id,i){var t=gt(id);t.subs[i].done=t.subs[i].done?0:1;sy(t);sv();R()}
 function tsb(id){cp();tdO=tdO==id?0:id;tdS="";R(1);var i=$("sb"+id);if(i)i.focus()}
 function as_(id){var t=gt(id),i=$("sb"+id),v=i?i.value.trim():"";if(!t||!v)return;cp();t.subs.push({t:v,done:0});var tp=tpl(t);if(tp)tp.subs.push(v);tdS="";sy(t);sv();R(1);i=$("sb"+id);if(i)i.focus()}
 function xs(id,i){var t=gt(id),tp=tpl(t);if(tp){var k=tp.subs.indexOf(t.subs[i].t);if(k>=0)tp.subs.splice(k,1)}t.subs.splice(i,1);sy(t);sv();R()}
 function lkt(id){var t=gt(id);t.lk=t.lk?0:1;var tp=tpl(t);if(tp)tp.lk=t.lk;sy(t);sv();R()}
-function at(){var t=$("tt").value.trim(),r=+$("trd").value||0,w=Math.max(.25,parseFloat($("tw").value)||1),rp=$("trp").value;if(!t){toast="Write the task first";R();return}S.last=r;tdT="";tdW=String(w);tdP="none";
+function at(){var t=$("tt").value.trim(),r=+$("trd").value||0,v=parseFloat($("tw").value),g=($("tsn").value=="-1"||v<0)?-1:1,w=g*Math.max(.25,Math.abs(v)||1),rp=$("trp").value;if(!t){toast="Write the task first";R();return}S.last=r;tdT="";tdW=String(Math.abs(w));tdN="1";tdP="none";
 if(rp!="none"){S.recur.push({id:S.u++,t:t,r:r,w:w,subs:[],rep:rp,d:td,skip:[]});mat(td)}else S.todos.push({id:S.u++,d:td,t:t,r:r,w:w,done:0,ap:0,subs:[]});toast="";sv();R(1)}
 function tpl(t){return t&&t.from?S.recur.filter(function(p){return p.id==t.from})[0]:null}
 function rm_(tp,ds){var dt=new Date(ds+"T00:00:00"),st=new Date(tp.d+"T00:00:00"),g=dt.getDay();if(dt<st)return false;if(tp.skip&&tp.skip.indexOf(ds)>=0)return false;if(tp.rep=="daily")return true;if(tp.rep=="weekdays")return g>0&&g<6;if(tp.rep=="weekly")return g==st.getDay();return false}
