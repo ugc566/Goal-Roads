@@ -1,4 +1,4 @@
-var V = "goal-roads-v14";
+var V = "goal-roads-v19";
 var FILES = ["./", "index.html", "manifest.json", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", function (e) {
