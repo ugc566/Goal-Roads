@@ -34,9 +34,13 @@ button:disabled{opacity:.4}
 svg text.hl{stroke:var(--s1);stroke-width:3px;paint-order:stroke}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
 .sm{padding:3px 9px;font-size:13px}
+.xs{padding:2px 7px;font-size:12px;line-height:1.3;border-radius:6px}
 .ck.sm{width:24px;height:24px;font-size:14px;border-radius:6px;padding:0}
 .ck.on{background:var(--ac);color:var(--bg);border-color:var(--ac)}
-.mp{height:66vh;overflow:auto;border:1px solid var(--bd);border-radius:8px;margin-top:8px;touch-action:pan-x pan-y;background:var(--s1)}
+.rs button:not(.ck){padding:4px 9px;font-size:12.5px;border-radius:7px;line-height:1.25}
+.rs .g3 button{padding:5px 2px}
+.rs input,.rs select{padding:6px 8px}
+.mp{height:78vh;overflow:auto;border:1px solid var(--bd);border-radius:8px;margin-top:8px;touch-action:pan-x pan-y;background:var(--s1)}
 svg{display:block}
 #sv{margin-top:0}
 svg text{fill:var(--tx);font-family:inherit}
@@ -79,7 +83,7 @@ function go(i){path=path.slice(0,i+1);sel=-1;arm=0;toast="";tree=0;todo=0;z=0;R(
 function tv(){tree=tree?0:1;todo=0;z=0;sel=-1;R()}
 function R(k){if(!k){if($("nt")){dT=$("nt").value;dS=$("ns").value}if($("tt")){tdT=$("tt").value;tdW=$("tw").value;tdP=$("trp").value;tdN=$("tsn").value;tdU=$("tru").value}if(tdO&&$("sb"+tdO))tdS=$("sb"+tdO).value}
 var wt=!!$("tt"),py=window.scrollY,m=$("mp"),rs=!z,sx=m?m.scrollLeft:0,sy=m?m.scrollTop:0;
-$("app").innerHTML=(iv?icr():cr())+(iv?IV():todo?TD():tree?TV():path.length?HV():HM());
+$("app").className="w"+(!iv&&!todo&&!tree&&path.length?" rs":"");$("app").innerHTML=(iv?icr():cr())+(iv?IV():todo?TD():tree?TV():path.length?HV():HM());
 if(iv)bInit();m=$("mp");if(m){draw();bind(m);if(!rs){m.scrollLeft=sx;m.scrollTop=sy}}if(wt&&todo)window.scrollTo(0,py);if($("sm"))us()}
 function HM(){var n=S.goals.length,H=Math.max(160,Math.ceil(n/2)*150+20),p={},s=TC()+'<div class="c"><div class="r"><b>My main goals</b><button onclick="mode=!mode;lk=-1;R()">'+(mode?"Done linking":"Link goals")+'</button></div>';
 if(mode)s+='<div class="m">Tap two goals to link or unlink them.</div>';
@@ -149,38 +153,51 @@ function bind(m){var pd=0,pz=0;function ds(v){var a=v.touches[0],b=v.touches[1];
 m.addEventListener("touchstart",function(v){if(v.touches.length==2){pd=ds(v);pz=z}},{passive:true});
 m.addEventListener("touchmove",function(v){if(v.touches.length==2&&pd){v.preventDefault();setZ(pz*ds(v)/pd)}},{passive:false});
 m.addEventListener("touchend",function(){pd=0},{passive:true})}
-function drawMap(){var h=hub(),k=h.kids,n=k.length,sub=path.length>1,sp=n>1?Math.max(56,Math.min(80,340/(n-1))):0,ee=sp*.85,
-W=Math.max(380,(n>1?(n-1)*sp:0)+100),cx=W/2,T=k.map(function(x){return tot(x)}),mx=Math.max.apply(null,T.concat([1])),ups=Math.min(26,900/mx),
-Ls=T.map(function(t){return Math.max(90,t*ups)}),gy=116,H=gy+Math.max.apply(null,Ls.concat([120]))+150,cw=Math.max(200,(n>1?(n-1)*ee:0)+120),s='';
-var BZ=Math.min(90,Math.min.apply(null,Ls.concat([999]))*.7);
-k.forEach(function(r,i){var o=i-(n-1)/2,xs=cx+o*sp,xe=cx+o*ee,L=Ls[i],ys=gy+L,d="M"+xs+","+ys+" L"+xs+","+(gy+BZ)+" C"+xs+","+(gy+BZ*.5)+" "+xe+","+(gy+BZ*.5)+" "+xe+","+gy,op=sel<0||sel==i?1:.28,P=r.kids.length>0;
-s+='<g id="g'+i+'" opacity="'+op+'" style="cursor:pointer" onclick="pick('+i+')"><path id="b'+i+'" d="'+d+'" fill="none" stroke="'+shd(r.c,.6)+'" stroke-opacity=".3" stroke-width="34"/><path id="f'+i+'" d="'+d+'" fill="none" stroke="'+shd(r.c,.6)+'" stroke-width="34"/><path d="'+d+'" fill="none" stroke="#ffffff" stroke-width="28"/><path d="'+d+'" fill="none" stroke="'+r.c+'" stroke-opacity=".5" stroke-width="23.5"/><path id="u'+i+'" d="'+d+'" fill="none" stroke="'+r.c+'" stroke-width="23.5"/><path d="'+d+'" fill="none" stroke="'+shd(r.c,.45)+'" stroke-opacity=".5" stroke-width="8" stroke-dasharray="20 14"/><path d="'+d+'" fill="none" stroke="#ffffff" stroke-width="4.6" stroke-dasharray="20 14"/><path d="'+d+'" fill="none" stroke="#000" stroke-opacity="0" stroke-width="40" pointer-events="stroke"/>'
-+(P?'<circle cx="'+xs+'" cy="'+ys+'" r="13" fill="var(--s1)" stroke="'+r.c+'" stroke-width="3"/><text x="'+xs+'" y="'+(ys+4)+'" text-anchor="middle" font-size="12" font-weight="600">'+r.kids.length+'</text>':'<circle cx="'+xs+'" cy="'+ys+'" r="9" fill="'+r.c+'" stroke="#f1efe8" stroke-width="3"/>')
-+'<text transform="translate('+(xs+4)+','+(ys+118)+') rotate(-90)" font-size="13" font-weight="600">'+e(tr(r.n,11)+" · "+T[i])+'</text></g>'});
-s+='<rect x="'+(cx-cw/2)+'" y="56" width="'+cw+'" height="60" rx="30" '+(sub?'fill="'+h.c+'" fill-opacity=".18" stroke="'+h.c+'" stroke-width="3"':'fill="var(--ab)" stroke="var(--ac)"')+'/><text x="'+(cx+(IM[h.id]?26:0))+'" y="82" text-anchor="middle" font-size="15" font-weight="600">'+e(tr(h.n,IM[h.id]?16:26))+'</text><text x="'+(cx+(IM[h.id]?26:0))+'" y="102" text-anchor="middle" font-size="13" class="mu">'+Math.round(pr(h)*100)+'% there · '+tot(h)+' steps</text>'+(IM[h.id]?'<clipPath id="hcl"><circle cx="'+(cx-cw/2+32)+'" cy="86" r="22"/></clipPath><image href="'+IM[h.id].t+'" x="'+(cx-cw/2+10)+'" y="64" width="44" height="44" preserveAspectRatio="xMidYMid slice" clip-path="url(#hcl)"/>':'');
-if(!n)s+='<text x="'+cx+'" y="260" text-anchor="middle" font-size="14" class="mu">No roads yet. Add one below.</text>';
-if(sub)s+='<line x1="'+cx+'" y1="54" x2="'+cx+'" y2="28" stroke="'+h.c+'" stroke-width="4"/><polygon points="'+(cx-7)+',34 '+cx+',24 '+(cx+7)+',34" fill="'+h.c+'"/><text x="'+cx+'" y="14" text-anchor="middle" font-size="12" class="mu">Leads to: '+e(tr(path[path.length-2].n,20))+'</text>';
-else s+='<text x="'+cx+'" y="18" text-anchor="middle" font-size="12" class="mu">Main goal</text>';
+function smt(t,l){t=Math.max(0,Math.min(1,t/l));return t*t*(3-2*t)}
+var RWd=44;
+function drawMap(){var h=hub(),k=h.kids,n=k.length,sub=path.length>1,sp=n>1?Math.max(60,Math.min(90,360/(n-1))):0,ee=sp*.85,rw=n>1?Math.max(32,Math.min(50,sp*.58)):46,A=Math.round(rw*.95),P=Math.round(rw*6.5),
+W=Math.max(380,(n>1?(n-1)*sp:0)+2*(A+rw/2+34)),cx=W/2,T=k.map(function(x){return tot(x)}),mx=Math.max.apply(null,T.concat([1])),ups=Math.min(26,900/mx),
+Ls=T.map(function(t){return Math.max(140,t*ups)}),gy=132,Yb=gy+Math.max.apply(null,Ls.concat([140])),H=Yb+175,cw=Math.max(240,(n>1?(n-1)*ee:0)+140),s='',BZ=120,hi=IM[h.id];RWd=rw;
+function wv(y){return A*smt(Yb-y,80)*smt(y-gy,BZ+40)*Math.sin(2*Math.PI*(y-gy)/P)}
+k.forEach(function(r,i){var o=i-(n-1)/2,xs=cx+o*sp,xe=cx+o*ee,L=Ls[i],ys=gy+L,pts=[],y;
+function xx(y){return xe+(xs-xe)*smt(y-gy,BZ)+wv(y)}
+for(y=ys;y>gy+1;y-=4)pts.push(xx(y).toFixed(1)+","+y);pts.push(xe.toFixed(1)+","+gy);
+var d="M"+pts.join(" L"),x0=xx(ys),op=sel<0||sel==i?1:.28,Pn=r.kids.length>0,u='<use href="#b'+i+'" fill="none" stroke-linejoin="round" ';
+s+='<g id="g'+i+'" opacity="'+op+'" style="cursor:pointer" onclick="pick('+i+')"><defs><path id="b'+i+'" d="'+d+'"/></defs>'
++u+'stroke="'+shd(r.c,.6)+'" stroke-opacity=".3" stroke-width="'+rw+'"/>'
++u+'id="f'+i+'" stroke="'+shd(r.c,.6)+'" stroke-width="'+rw+'"/>'
++u+'stroke="#ffffff" stroke-width="'+(rw-5)+'"/>'
++u+'stroke="'+r.c+'" stroke-opacity=".5" stroke-width="'+(rw-7)+'"/>'
++u+'id="u'+i+'" stroke="'+r.c+'" stroke-width="'+(rw-7)+'"/>'
++u+'stroke="#ffffff" stroke-opacity=".95" stroke-width="'+Math.max(1.6,rw*.045).toFixed(1)+'" stroke-dasharray="12 10"/>'
++u+'stroke="#000" stroke-opacity="0" stroke-width="'+(rw+12)+'" pointer-events="stroke"/>'
++(Pn?'<circle cx="'+x0+'" cy="'+ys+'" r="'+(rw*.4)+'" fill="var(--s1)" stroke="'+r.c+'" stroke-width="3"/><text x="'+x0+'" y="'+(ys+5)+'" text-anchor="middle" font-size="14" font-weight="700">'+r.kids.length+'</text>':'<circle cx="'+x0+'" cy="'+ys+'" r="'+(rw*.3)+'" fill="'+r.c+'" stroke="#f1efe8" stroke-width="3"/>')
++'<text transform="translate('+(x0+5)+','+(ys+rw*.5+132)+') rotate(-90)" font-size="15" font-weight="600">'+e(tr(r.n,9)+" · "+T[i])+'</text></g>'});
+s+='<rect x="'+(cx-cw/2)+'" y="54" width="'+cw+'" height="78" rx="39" '+(sub?'fill="'+h.c+'" fill-opacity=".18" stroke="'+h.c+'" stroke-width="3"':'fill="var(--ab)" stroke="var(--ac)" stroke-width="2"')+'/><text x="'+(cx+(hi?30:0))+'" y="90" text-anchor="middle" font-size="20" font-weight="700">'+e(tr(h.n,hi?18:28))+'</text><text x="'+(cx+(hi?30:0))+'" y="114" text-anchor="middle" font-size="14" class="mu">'+Math.round(pr(h)*100)+'% there · '+tot(h)+' steps</text>'+(hi?'<clipPath id="hcl"><circle cx="'+(cx-cw/2+46)+'" cy="93" r="29"/></clipPath><image href="'+hi.t+'" x="'+(cx-cw/2+17)+'" y="64" width="58" height="58" preserveAspectRatio="xMidYMid slice" clip-path="url(#hcl)"/>':'');
+if(!n)s+='<text x="'+cx+'" y="300" text-anchor="middle" font-size="15" class="mu">No roads yet. Add one below.</text>';
+if(sub)s+='<line x1="'+cx+'" y1="52" x2="'+cx+'" y2="26" stroke="'+h.c+'" stroke-width="4"/><polygon points="'+(cx-8)+',34 '+cx+',22 '+(cx+8)+',34" fill="'+h.c+'"/><text x="'+cx+'" y="14" text-anchor="middle" font-size="13" class="mu">Leads to: '+e(tr(path[path.length-2].n,20))+'</text>';
+else s+='<text x="'+cx+'" y="20" text-anchor="middle" font-size="13" class="mu">Main goal</text>';
 fin(s,W,H);dec()}
 function shd(c,f){if(!c||c.length!=7)return c;var n=parseInt(c.slice(1),16);return"rgb("+Math.round((n>>16)*f)+","+Math.round(((n>>8)&255)*f)+","+Math.round((n&255)*f)+")"}
 var FP="M-.5,.55 a.5,.62 0 1,0 1,0 a.5,.62 0 1,0 -1,0Z M-.38,-.7 a.38,.42 0 1,0 .76,0 a.38,.42 0 1,0 -.76,0Z";
-function dec(){var h=hub();h.kids.forEach(function(r,i){var b=$("b"+i),g=$("g"+i),L=b.getTotalLength(),fr=pr(r),leaf=!r.kids.length,N=r.N,M=leaf?(N<=60?N:20):10,Q=leaf?N*4:40,ds=Math.max(1,Math.ceil(9/(L/M*z)));var fo=$("f"+i);if(fo)fo.setAttribute("stroke-dasharray",(L*fr)+" "+L);var uo=$("u"+i);if(uo)uo.setAttribute("stroke-dasharray",(L*fr)+" "+L);
-for(var j=ds;j<=M;j+=ds){var t=b.getPointAtLength(L*j/M);
-g.appendChild(el("circle",{cx:t.x,cy:t.y,r:3.2,fill:j/M<=fr+1e-4?"#f1efe8":shd(r.c,.6),stroke:j/M<=fr+1e-4?shd(r.c,.6):"#f1efe8","stroke-width":1.4}));
-if(leaf){var c=el("circle",{cx:t.x,cy:t.y,r:9,fill:"transparent"});(function(j){c.addEventListener("click",function(v){v.stopPropagation();if(sel!=i)pick(i);else openNote(i,M==N?j:Math.round(j*N/M))})})(j);g.appendChild(c)}}
+function dec(){var h=hub();h.kids.forEach(function(r,i){var b=$("b"+i),g=$("g"+i),L=b.getTotalLength(),fr=pr(r),leaf=!r.kids.length,N=r.N,M=leaf?(N<=60?N:20):10,Q=leaf?N*4:40,ds=Math.max(1,Math.ceil(9/(L/M*z))),RW=RWd,dash=(L*fr)+" "+L;
+["f","u"].forEach(function(pf){var o=$(pf+i);if(o)o.setAttribute("stroke-dasharray",dash)});
+for(var j=ds;j<=M;j+=ds){var t=b.getPointAtLength(L*j/M),dn=j/M<=fr+1e-4;
+g.appendChild(el("circle",{cx:t.x,cy:t.y,r:Math.max(3,RW*.085),fill:dn?"#f1efe8":shd(r.c,.6),stroke:dn?shd(r.c,.6):"#f1efe8","stroke-width":1.4}));
+if(leaf){var c=el("circle",{cx:t.x,cy:t.y,r:Math.max(9,RW*.3),fill:"transparent"});(function(j){c.addEventListener("click",function(v){v.stopPropagation();if(sel!=i)pick(i);else openNote(i,M==N?j:Math.round(j*N/M))})})(j);g.appendChild(c)}}
 var cq=Math.floor(fr*Q+1e-6),sq=L/Q,st=Math.max(1,Math.ceil(9/(sq*z)));if(cq/st>160)st=Math.ceil(cq/160);
-var fs=Math.min(4.5,Math.max(1.8,sq*st*.5));
+var fs=Math.min(RW*.13,Math.max(1.8,sq*st*.5));
 for(var q=st,sd=1;q<=cq;q+=st,sd++){var off=L*q/Q,p1=b.getPointAtLength(off),pa=b.getPointAtLength(Math.max(0,off-.5)),pb=b.getPointAtLength(Math.min(L,off+.5)),dx=pb.x-pa.x,dy=pb.y-pa.y,ln=Math.hypot(dx,dy)||1,sg=(sd%2?1:-1)*fs*.95;
 g.appendChild(el("path",{d:FP,fill:"#f1efe8","fill-opacity":.95,transform:"translate("+(p1.x-dy/ln*sg)+","+(p1.y+dx/ln*sg)+") rotate("+(Math.atan2(dy,dx)*180/Math.PI-90)+") scale("+fs+")"}))}
 var SG=(r.stages&&r.stages.length)?r.stages.map(function(s){return{f:Math.min(1,s.s/(leaf?N:100)),n:s.n}}):[{f:.25,n:""},{f:.5,n:""},{f:.75,n:""}];
-SG.forEach(function(s){var off=L*s.f,p1=b.getPointAtLength(off),pa=b.getPointAtLength(Math.max(0,off-.5)),pb=b.getPointAtLength(Math.min(L,off+.5)),dx=pb.x-pa.x,dy=pb.y-pa.y,ln=Math.hypot(dx,dy)||1,nx=-dy/ln,ny=dx/ln,rc=fr>=s.f-1e-4;
-g.appendChild(el("line",{x1:p1.x-nx*18,y1:p1.y-ny*18,x2:p1.x+nx*18,y2:p1.y+ny*18,stroke:rc?"var(--gd)":"#f1efe8","stroke-width":3.5,"stroke-linecap":"round"}));
-var tx=el("text",{x:p1.x+24,y:p1.y+5,"font-size":16,style:"fill:"+(rc?"var(--gd)":"var(--mu)")});tx.textContent=rc?"★":"☆";g.appendChild(tx);
-if(s.n&&sel==i){var lb=el("text",{x:p1.x+42,y:p1.y+4,"font-size":11,"font-weight":600,class:"hl"});lb.textContent=tr(s.n,18);g.appendChild(lb)}});
+SG.forEach(function(s){var off=L*s.f,p1=b.getPointAtLength(off),pa=b.getPointAtLength(Math.max(0,off-.5)),pb=b.getPointAtLength(Math.min(L,off+.5)),dx=pb.x-pa.x,dy=pb.y-pa.y,ln=Math.hypot(dx,dy)||1,nx=-dy/ln,ny=dx/ln,rc=fr>=s.f-1e-4,hw=RW/2+4;
+g.appendChild(el("line",{x1:p1.x-nx*hw,y1:p1.y-ny*hw,x2:p1.x+nx*hw,y2:p1.y+ny*hw,stroke:rc?"var(--gd)":"#f1efe8","stroke-width":3.5,"stroke-linecap":"round"}));
+var tx=el("text",{x:p1.x+hw+6,y:p1.y+6,"font-size":19,style:"fill:"+(rc?"var(--gd)":"var(--mu)")});tx.textContent=rc?"★":"☆";g.appendChild(tx);
+if(s.n&&sel==i){var lb=el("text",{x:p1.x+hw+28,y:p1.y+5,"font-size":12,"font-weight":600,class:"hl"});lb.textContent=tr(s.n,18);g.appendChild(lb)}});
 if(leaf)Object.keys(r.notes).forEach(function(k){var kk=Math.max(1,Math.min(N,+k)),t=b.getPointAtLength(L*kk/N),f=el("g",{transform:"translate("+t.x+","+t.y+")",style:"cursor:pointer"});
 f.innerHTML='<line x1="0" y1="0" x2="0" y2="-20" stroke="var(--gd)" stroke-width="2"/><polygon points="0,-20 14,-15 0,-10" fill="var(--gd)"/><circle cx="4" cy="-10" r="14" fill="transparent"/>';
 f.addEventListener("click",function(v){v.stopPropagation();openNote(i,kk)});g.appendChild(f)});
-var m=b.getPointAtLength(L*fr);g.appendChild(el("circle",{cx:m.x,cy:m.y,r:9,fill:r.c,stroke:"#f1efe8","stroke-width":3.5}));g.appendChild(el("circle",{cx:m.x,cy:m.y,r:2.8,fill:"#f1efe8"}))})}
+var m=b.getPointAtLength(L*fr);g.appendChild(el("circle",{cx:m.x,cy:m.y,r:RW*.28,fill:r.c,stroke:"#f1efe8","stroke-width":3.5}));g.appendChild(el("circle",{cx:m.x,cy:m.y,r:RW*.08,fill:"#f1efe8"}))})}
 function drawTree(){TN=[];var cnt=0,md=0,PW=140,vr={n:"All goals",c:"#888",kids:S.goals,N:0,p:0,notes:{}};
 function lay(n,anc,d){var rc={n:n,anc:anc,d:d,k:[],i:TN.length};md=Math.max(md,d);TN.push(rc);
 if(n.kids.length){n.kids.forEach(function(c){rc.k.push(lay(c,d?anc.concat([n]):anc,d+1))});rc.y=(rc.k[0].y+rc.k[rc.k.length-1].y)/2}else rc.y=24+(cnt++)*36;return rc}
@@ -198,16 +215,16 @@ s+='<input value="'+e(r.n)+'" onchange="rr(this.value)" aria-label="Road name"/>
 if(r.kids.length){
 s+='<div class="r"><span class="m">Sub-roads</span><b>'+r.kids.length+'</b></div><div class="r"><span class="m">Total steps</span><b>'+tot(r)+'</b></div><div class="r"><span class="m">Overall</span><b>'+Math.round(pr(r)*100)+'%</b></div>';
 r.kids.slice(0,10).forEach(function(c){s+='<div class="r m"><span>'+e(tr(c.n,24))+'</span><span>'+Math.round(pr(c)*100)+'%</span></div>'});
-s+=stUI(r);s+='<button class="p" style="width:100%;margin-top:8px" onclick="op()">Open sub-roads</button>'}
+s+='<button class="p" style="width:100%;margin-top:8px" onclick="op()">Open sub-roads</button>'}
 else{var d=Math.floor(r.p+1e-4),f=r.p/r.N,nx=0;[25,50,75,100].forEach(function(q){if(!nx&&q/100>f+1e-4)nx=q});
 s+='<div class="g2"><label class="m">Steps done<input type="number" min="0" step="0.25" value="'+r.p+'" onchange="sd(this.value)"/></label><label class="m">Road length (steps)<input type="number" min="1" step="1" value="'+r.N+'" onchange="sl(this.value)"/></label></div>';
 var ns_=(r.stages||[]).filter(function(g){return g.s/r.N>f+1e-4}).sort(function(a,b){return a.s-b.s})[0];
 s+='<div class="r"><span class="m">'+(f>=1?"Road complete":"Next stage")+'</span><b>'+(f>=1?"100%":(r.stages&&r.stages.length?(ns_?e(tr(ns_.n,22))+" · step "+ns_.s:"Finish line"):nx+"%"))+'</b></div>';
 s+='<div class="g3"><button onclick="inc(-.25)">− quarter</button><button onclick="inc(-.5)">− half</button><button onclick="inc(-1)">− full</button><button onclick="inc(.25)">+ quarter</button><button onclick="inc(.5)">+ half</button><button onclick="inc(1)">+ full</button></div>';
-s+=stUI(r);s+='<div style="margin-top:12px"><b>Notes on this road</b></div><div class="m">Tip: tap a dot on this road to add a note at that step.</div><label class="m" style="margin-top:6px">Step number<input id="ns" type="number" min="1" value="'+(dS||Math.min(r.N,d+1))+'"/></label><textarea id="nt" placeholder="Today I read 30 pages. Chapter 4.">'+e(dT)+'</textarea><button class="p" style="width:100%;margin-top:6px" onclick="sn()">Save note</button>';
+s+='<div style="margin-top:12px"><b>Notes on this road</b></div><div class="m">Tip: tap a dot on this road to add a note at that step.</div><label class="m" style="margin-top:6px">Step number<input id="ns" type="number" min="1" value="'+(dS||Math.min(r.N,d+1))+'"/></label><textarea id="nt" placeholder="Today I read 30 pages. Chapter 4.">'+e(dT)+'</textarea><button class="p" style="width:100%;margin-top:6px" onclick="sn()">Save note</button>';
 Object.keys(r.notes).sort(function(a,b){return b-a}).forEach(function(k){s+='<div class="r" style="border-top:1px solid var(--bd);margin-top:6px;padding-top:6px;gap:8px;align-items:flex-start"><div><b>Step '+k+'</b><div class="m" style="white-space:pre-wrap">'+e(r.notes[k])+'</div></div><div style="white-space:nowrap"><button onclick="en('+k+')">Edit</button> <button onclick="dn('+k+')">×</button></div></div>'});
 s+='<button style="width:100%;margin-top:10px" onclick="op()">Split into sub-roads</button>'}
-return s+'<button style="width:100%;margin-top:8px" onclick="rm()">'+(arm==1?"Tap again to remove":"Remove road")+'</button></div>'}
+return s+'<button style="width:100%;margin-top:8px" onclick="rm()">'+(arm==1?"Tap again to remove":"Remove road")+'</button>'+stUI(r)+'</div>'}
 function AF(){var s='<div class="c"><b>Add a road to '+e(tr(hub().n,22))+'</b><div class="g2"><input id="rn2" placeholder="Islamiat"/><input id="rs" type="number" min="1" step="1" value="30" aria-label="Steps"/></div><div class="m" style="margin:4px 0 8px">Name, then road length in steps (30, 365 or any number). A longer road is drawn longer.</div><button class="p" style="width:100%" onclick="ar()">Add road</button></div>';
 if(path.length==1)s+='<button style="width:100%;margin-top:10px" onclick="dm()">'+(arm==2?"Tap again to delete":"Delete this goal")+'</button>';
 return s}
@@ -232,7 +249,8 @@ var dt=new Date(td+"T00:00:00"),lab=dt.toLocaleDateString("en-GB",{weekday:"shor
 var rpo=rpe(tdP);
 s='<div class="c"><div class="m" style="margin-bottom:6px">To-do for <b style="color:var(--tx)">'+e(tr(G.n,30))+'</b></div><div class="r"><button onclick="sh(-1)">‹</button><div style="text-align:center"><b>'+lab+'</b><div class="m">'+dn+' of '+all.length+' done · '+(gn<0?"−":"+")+Math.abs(gn)+' steps</div></div><button onclick="sh(1)">›</button></div><input type="date" value="'+td+'" onchange="setD(this.value)" style="margin-top:8px" aria-label="Date"/>';
 if(toast)s+='<div class="ts" style="margin-top:8px">★ '+e(toast)+'</div>';
-var un_=all.filter(function(x){return!x.done}).length;if(un_)s+='<button style="width:100%;margin-top:8px" onclick="mva()">Move '+un_+' unfinished to next day</button>';
+var un_=all.filter(function(x){return!x.done}).length;var hs_=all.some(function(x){return x.subs.length});
+if(un_||hs_)s+='<div class="cr" style="margin-top:8px;gap:4px">'+(un_?'<button class="xs" onclick="mva()">Move '+un_+' unfinished › next day</button>':'')+(hs_?'<button class="xs" onclick="hsa(1)">▾ Hide all sub-tasks</button><button class="xs" onclick="hsa(0)">▸ Show all</button>':'')+'</div>';
 if(!ts.length)s+='<div class="m" style="margin-top:14px">No tasks for this day yet. Add one below.</div>';
 ts.forEach(function(x){var f=x.r?fid(x.r):null,sb=x.subs,sc=sb.filter(function(q){return q.done}).length,tp=tpl(x),w=x.w;
 s+='<div style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px">';
@@ -244,9 +262,9 @@ s+='<div class="g2"><button onclick="tsb('+x.id+')">+ sub-task</button><button c
 else{
 s+='<div class="r" style="gap:10px;align-items:flex-start"><button class="ck'+(x.done?" on":"")+'" onclick="tk('+x.id+')" aria-label="Mark done">'+(x.done?"✓":"")+'</button><div style="flex:1;min-width:0"><div style="font-weight:600;'+(x.done?"text-decoration:line-through;color:var(--mu)":"")+'">'+e(x.t)+'</div><div class="cr" style="margin-top:4px;gap:6px">'
 +(f?'<button class="chip" onclick="og('+x.r+')"><span style="width:8px;height:8px;border-radius:50%;background:'+f.n.c+'"></span>'+e(tr(f.n.n,22))+'</button>':(x.r?'<span class="m">Removed road</span>':''))
-+'<span class="m">'+(x.r?wl(w):"")+(sb.length?(x.r?" · ":"")+sc+"/"+sb.length+" sub":"")+'</span>'+(tp?'<span class="pill">🔁 '+RS[tp.rep]+'</span><span class="m">· '+rtx(tp)+'</span>':'')+'</div>'+(tp&&tp.until?rbar(tp,f):'')+'</div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:140px">'+(x.done?'':'<button class="sm" onclick="mvt('+x.id+')">Next day →</button>')+'<button class="sm" onclick="ee('+x.id+')">Edit</button><button class="sm" onclick="tsb('+x.id+')" aria-label="Add sub-task">+ sub</button><button class="sm" onclick="xt('+x.id+')" aria-label="Delete task">×</button></div></div>';
-if(sb.length)s+='<div class="r" style="margin-left:40px;padding:2px 0"><span class="m">Sub-tasks move the road</span><button class="sm" onclick="lkt('+x.id+')">'+(x.lk?"On":"Off")+'</button></div>';
-sb.forEach(function(q,i){s+='<div class="r" style="gap:8px;margin-left:40px;padding:4px 0"><button class="ck sm'+(q.done?" on":"")+'" onclick="sk('+x.id+','+i+')" aria-label="Mark sub-task done">'+(q.done?"✓":"")+'</button><div style="flex:1;'+(q.done?"text-decoration:line-through;color:var(--mu)":"")+'">'+e(q.t)+'</div><button class="sm" onclick="xs('+x.id+','+i+')" aria-label="Delete sub-task">×</button></div>'});
++'<span class="m">'+(x.r?wl(w):"")+'</span>'+(sb.length?'<button class="xs" style="color:var(--mu)" onclick="hsb('+x.id+')" aria-label="Show or hide sub-tasks">'+(x.h?"▸ Show":"▾ Hide")+' '+sc+"/"+sb.length+'</button>':'')+(tp?'<span class="pill">🔁 '+RS[tp.rep]+'</span><span class="m">· '+rtx(tp)+'</span>':'')+'</div>'+(tp&&tp.until?rbar(tp,f):'')+'</div><div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:112px">'+(x.done?'':'<button class="xs" onclick="mvt('+x.id+')" aria-label="Move to next day">Next ›</button>')+'<button class="xs" onclick="ee('+x.id+')" aria-label="Edit task">Edit</button><button class="xs" onclick="tsb('+x.id+')" aria-label="Add sub-task">+sub</button><button class="xs" onclick="xt('+x.id+')" aria-label="Delete task">×</button></div></div>';
+if(sb.length&&!x.h)s+='<div class="r" style="margin-left:40px;padding:2px 0"><span class="m">Sub-tasks move the road</span><button class="sm" onclick="lkt('+x.id+')">'+(x.lk?"On":"Off")+'</button></div>';
+(x.h?[]:sb).forEach(function(q,i){s+='<div class="r" style="gap:8px;margin-left:40px;padding:4px 0"><button class="ck sm'+(q.done?" on":"")+'" onclick="sk('+x.id+','+i+')" aria-label="Mark sub-task done">'+(q.done?"✓":"")+'</button><div style="flex:1;'+(q.done?"text-decoration:line-through;color:var(--mu)":"")+'">'+e(q.t)+'</div><button class="xs" onclick="xs('+x.id+','+i+')" aria-label="Delete sub-task">×</button></div>'});
 if(tdO==x.id)s+=asr(x.id,40)+(tp?'<div class="m" style="margin-left:40px">Sub-tasks you add or remove are kept for future days too.</div>':'')}
 s+='</div>'});
 s+='</div>';
@@ -271,6 +289,8 @@ if(tp.until){var d=tp.d,n=0;while(d<=tp.until&&n<3700){if(rm_(tp,d)||S.todos.som
 return{done:done,total:tot}}
 function rtx(tp){var s=rst(tp);return tp.until?s.done+"/"+s.total+" done till "+tp.until:s.done+" done so far"}
 function rbar(tp,f){var s=rst(tp),p=s.total?Math.min(100,Math.round(s.done/s.total*100)):0;return'<div style="height:8px;background:var(--s2);border-radius:4px;margin-top:8px"><div style="height:8px;width:'+p+'%;background:'+(f?f.n.c:"var(--ac)")+';border-radius:4px"></div></div>'}
+function hsb(id){var t=gt(id);if(!t)return;t.h=t.h?0:1;var tp=tpl(t);if(tp)tp.h=t.h;sv();R()}
+function hsa(v){var G=path[0];S.todos.forEach(function(x){if(x.d==td&&x.g==G.id&&x.subs.length){x.h=v;var tp=tpl(x);if(tp)tp.h=v}});sv();R()}
 function ee(id){cp();tdE=tdE==id?0:id;R(1)}
 function ret(t){var f=t.r?fid(t.r):null;if(f&&!f.n.kids.length&&t.ap){var r=f.n;r.p=Math.min(r.N,Math.max(0,Math.round((r.p-t.ap)*100)/100))}t.ap=0}
 function etx(id,v){var t=gt(id),tp=tpl(t);v=v.trim();if(t&&v){t.t=v;if(tp)tp.t=v;sv()}R()}
@@ -280,14 +300,14 @@ function esu(id,i,v){var t=gt(id),tp=tpl(t);v=v.trim();if(t&&v){var k=tp?tp.subs
 function tk(id){var t=gt(id);if(!t)return;if(t.subs.length&&t.lk){var all=t.subs.every(function(q){return q.done});t.subs.forEach(function(q){q.done=all?0:1})}else t.done=t.done?0:1;sy(t);sv();R()}
 function sk(id,i){var t=gt(id);t.subs[i].done=t.subs[i].done?0:1;sy(t);sv();R()}
 function tsb(id){cp();tdO=tdO==id?0:id;tdS="";R(1);var i=$("sb"+id);if(i)i.focus()}
-function as_(id){var t=gt(id),i=$("sb"+id),v=i?i.value.trim():"";if(!t||!v)return;cp();t.subs.push({t:v,done:0});var tp=tpl(t);if(tp)tp.subs.push(v);tdS="";sy(t);sv();R(1);i=$("sb"+id);if(i)i.focus()}
+function as_(id){var t=gt(id),i=$("sb"+id),v=i?i.value.trim():"";if(!t||!v)return;cp();t.subs.push({t:v,done:0});t.h=0;var tp=tpl(t);if(tp)tp.h=0;if(tp)tp.subs.push(v);tdS="";sy(t);sv();R(1);i=$("sb"+id);if(i)i.focus()}
 function xs(id,i){var t=gt(id),tp=tpl(t);if(tp){var k=tp.subs.indexOf(t.subs[i].t);if(k>=0)tp.subs.splice(k,1)}t.subs.splice(i,1);sy(t);sv();R()}
 function lkt(id){var t=gt(id);t.lk=t.lk?0:1;var tp=tpl(t);if(tp)tp.lk=t.lk;sy(t);sv();R()}
 function at(){var G=path[0],t=$("tt").value.trim(),r=+$("trd").value||0,v=parseFloat($("tw").value),g=($("tsn").value=="-1"||v<0)?-1:1,w=g*Math.max(.25,Math.abs(v)||1),rp=$("trp").value,un=($("tru")||{}).value||"";if(!G)return;if(!t){toast="Write the task first";R();return}S.lg=S.lg||{};S.lg[G.id]=r;tdT="";tdW=String(Math.abs(w));tdN="1";tdP="none";tdU="";
 if(rp!="none"){S.recur.push({id:S.u++,g:G.id,t:t,r:r,w:w,subs:[],rep:rp,d:td,skip:[],until:un});mat(td)}else S.todos.push({id:S.u++,g:G.id,d:td,t:t,r:r,w:w,done:0,ap:0,subs:[]});toast="";sv();R(1)}
 function tpl(t){return t&&t.from?S.recur.filter(function(p){return p.id==t.from})[0]:null}
 function rm_(tp,ds){var dt=new Date(ds+"T00:00:00"),st=new Date(tp.d+"T00:00:00"),g=dt.getDay();if(dt<st)return false;if(tp.until&&ds>tp.until)return false;if(tp.skip&&tp.skip.indexOf(ds)>=0)return false;if(tp.rep=="daily")return true;if(tp.rep=="weekdays")return g>0&&g<6;if(tp.rep=="weekly")return g==st.getDay();return false}
-function mat(ds){var n=0;S.recur.forEach(function(tp){if(rm_(tp,ds)&&!S.todos.some(function(x){return x.from==tp.id&&x.d==ds})){S.todos.push({id:S.u++,g:tp.g,d:ds,t:tp.t,r:tp.r,w:tp.w,done:0,ap:0,lk:tp.lk||0,from:tp.id,subs:tp.subs.map(function(q){return{t:q,done:0}})});n++}});if(n)sv()}
+function mat(ds){var n=0;S.recur.forEach(function(tp){if(rm_(tp,ds)&&!S.todos.some(function(x){return x.from==tp.id&&x.d==ds})){S.todos.push({id:S.u++,g:tp.g,d:ds,t:tp.t,r:tp.r,w:tp.w,done:0,ap:0,lk:tp.lk||0,h:tp.h||0,from:tp.id,subs:tp.subs.map(function(q){return{t:q,done:0}})});n++}});if(n)sv()}
 function xt(id){var t=gt(id),tp=tpl(t);if(tp)tp.skip.push(t.d);S.todos=S.todos.filter(function(x){return x.id!=id});sv();R()}
 function sr(id){var t=gt(id),tp=tpl(t);if(!tp)return;S.recur=S.recur.filter(function(p){return p.id!=tp.id});S.todos=S.todos.filter(function(x){return!(x.from==tp.id&&!x.done&&!x.ap&&x.d>t.d)});S.todos.forEach(function(x){if(x.from==tp.id)delete x.from});toast="Repeat stopped. Future days will not show this task.";sv();R()}
 function sh(n){var d=new Date(td+"T00:00:00");d.setDate(d.getDate()+n);td=ymd(d);toast="";R()}
@@ -470,15 +490,20 @@ function cel(o,n,r){var sg=r&&r.stages&&r.stages.length?r.stages:null;
 if(sg){var hit=sg.filter(function(g){var f=Math.min(1,g.s/r.N);return f>o+1e-6&&f<=n+1e-6}).sort(function(a,b){return b.s-a.s});
 if(hit.length)toast="Stage reached: "+hit[0].n+(n>=1-1e-6?" · Road complete!":"");else if(n>=1-1e-6&&o<1-1e-6)toast="Road complete! Celebrate this one.";return}
 var a=Math.floor(o*4+1e-4),b=Math.floor(n*4+1e-4);if(b>a)toast=["","First quarter done. The road is real now.","Halfway there. Keep the pace.","Three quarters done. The goal is in sight.","Road complete! Celebrate this one."][b]}
-function stUI(r){var u=r.kids.length?"%":"step",s='<div style="margin-top:12px"><b>Stages</b> <span class="m">your own milestones on this road</span></div>';
-(r.stages||[]).map(function(g,i){return[g,i]}).sort(function(a,b){return a[0].s-b[0].s}).forEach(function(x){var g=x[0],i=x[1];
-s+='<div class="g2" style="grid-template-columns:2fr 1fr auto;align-items:end"><label class="m">Name<input value="'+e(g.n)+'" onchange="stEd('+i+',0,this.value)"/></label><label class="m">At '+u+'<input type="number" min="0" step="any" value="'+g.s+'" onchange="stEd('+i+',1,this.value)"/></label><button class="sm" onclick="stDel('+i+')" aria-label="Delete stage">×</button></div>'});
-s+='<div class="g2" style="grid-template-columns:2fr 1fr auto;align-items:end"><label class="m">New stage<input id="stn" placeholder="e.g. Basics done"/></label><label class="m">At '+u+'<input id="sts" type="number" min="0" step="any"/></label><button class="p sm" onclick="stAdd()">Add</button></div>';
-if(!(r.stages||[]).length)s+='<div class="m" style="margin-top:6px">No stages yet, so stars show at 25%, 50% and 75%. Add your own and they replace the stars.</div>';
-return s}
+var stO=0,stE="";
+function stUI(r){var u=r.kids.length?"%":"step",sg=(r.stages||[]).map(function(g,i){return[g,i]}).sort(function(a,b){return a[0].s-b[0].s});
+var s='<details style="margin-top:14px"'+(stO?" open":"")+' ontoggle="stO=this.open"><summary style="cursor:pointer;font-weight:600">Stages <span class="m" style="font-weight:400">('+sg.length+') your own milestones on this road</span></summary>';
+s+='<div style="display:grid;grid-template-columns:2fr 1fr auto;gap:6px;align-items:end;margin-top:8px"><label class="m">New stage<input id="stn" placeholder="e.g. Basics done" style="padding:6px"/></label><label class="m">At '+u+'<input id="sts" type="number" min="0" step="any" style="padding:6px"/></label><button class="p sm" onclick="stAdd()">Add</button></div>';
+if(stE)s+='<div class="m" style="margin-top:6px;color:var(--gd)">'+e(stE)+'</div>';
+if(!sg.length)s+='<div class="m" style="margin-top:6px">No stages yet, so stars show at 25%, 50% and 75%. Add your own and they replace the stars.</div>';
+else{s+='<div class="m" style="display:grid;grid-template-columns:2fr 1fr auto;gap:6px;margin-top:12px"><span>Name</span><span>At '+u+'</span><span style="width:34px"></span></div>';
+sg.forEach(function(x){var g=x[0],i=x[1];s+='<div style="display:grid;grid-template-columns:2fr 1fr auto;gap:6px;align-items:center;margin-top:4px"><input value="'+e(g.n)+'" style="padding:6px" onchange="stEd('+i+',0,this.value)"/><input type="number" min="0" step="any" value="'+g.s+'" style="padding:6px" onchange="stEd('+i+',1,this.value)"/><button class="sm" onclick="stDel('+i+')" aria-label="Delete stage">×</button></div>'});
+s+='<button class="sm" style="margin-top:8px" onclick="stClr()">'+(arm==3?"Tap again to delete all":"Delete all stages")+'</button>'}
+return s+'</details>'}
 function stAdd(){var r=hub().kids[sel],n=$("stn").value.trim(),v=parseFloat($("sts").value),mx=r.kids.length?100:r.N;
-if(!n||!(v>0)||v>mx){toast="Give the stage a name and a position between 0 and "+mx+(r.kids.length?"%":" steps")+".";R();return}
-(r.stages=r.stages||[]).push({n:n,s:v});toast="";sv();R()}
+if(!n||!(v>0)||v>mx){stE="Give the stage a name and a position between 0 and "+mx+(r.kids.length?"%":" steps")+".";R();return}
+(r.stages=r.stages||[]).push({n:n,s:v});stE="";arm=0;sv();R()}
+function stClr(){var r=hub().kids[sel];if(arm!=3){arm=3;R();return}r.stages=[];arm=0;sv();R()}
 function stEd(i,f,v){var r=hub().kids[sel],g=r.stages[i],mx=r.kids.length?100:r.N;if(f==0)g.n=v.trim()||g.n;else{var x=parseFloat(v);if(x>0&&x<=mx)g.s=x}sv();R()}
 function stDel(i){var r=hub().kids[sel];r.stages.splice(i,1);sv();R()}
 function sp(r,v){var o=r.p/r.N;toast="";arm=0;r.p=Math.min(r.N,Math.max(0,Math.round(v*100)/100));cel(o,r.p/r.N,r);sv();R()}
